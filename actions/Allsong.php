@@ -6,7 +6,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     echo '<div class="song-grid">';
-    $songIndex = 0; // Index to track the order of songs
+    $songIndex = 0;
     while ($row = $result->fetch_assoc()) {
         $songTitle = $row['title'];
         $songAuthor = $row['author'];
@@ -39,38 +39,73 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
-
- <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
- <script>
-    let currentSongIndex = 0;
+<script>
+    let currentSongIndex = localStorage.getItem('currentSongIndex') ? parseInt(localStorage.getItem('currentSongIndex')) : 0;
+    let isSongPlaying = localStorage.getItem('isSongPlaying') === 'true' ? true : false;
+    let songCurrentTime = localStorage.getItem('songCurrentTime') ? parseFloat(localStorage.getItem('songCurrentTime')) : 0;
     const totalSongs = <?php echo $songIndex; ?>; 
     function playSong(index) {
         stopAllSongs();
         currentSongIndex = index;
         const currentAudio = document.getElementById(`audio-${index}`);
+        currentAudio.currentTime = songCurrentTime; 
         currentAudio.play();
         currentAudio.onended = playNextSong;
+        isSongPlaying = true;
+        savePlayState(); 
     }
 
     function stopSong(index) {
         const currentAudio = document.getElementById(`audio-${index}`);
         currentAudio.pause();
         currentAudio.currentTime = 0; 
+        isSongPlaying = false;
+        savePlayState();
     }
+
 
     function stopAllSongs() {
         for (let i = 0; i < totalSongs; i++) {
-            stopSong(i);
+            const audioElement = document.getElementById(`audio-${i}`);
+            audioElement.pause();
         }
     }
 
+  
     function playNextSong() {
         currentSongIndex++;
         if (currentSongIndex < totalSongs) {
             playSong(currentSongIndex);
+        } else {
+            isSongPlaying = false;
+            savePlayState();
         }
     }
+
+    function savePlayState() {
+        localStorage.setItem('currentSongIndex', currentSongIndex);
+        localStorage.setItem('isSongPlaying', isSongPlaying);
+        localStorage.setItem('songCurrentTime', document.getElementById(`audio-${currentSongIndex}`).currentTime);
+    }
+
+   
+    window.addEventListener('load', function () {
+        if (isSongPlaying) {
+            const currentAudio = document.getElementById(`audio-${currentSongIndex}`);
+            currentAudio.currentTime = songCurrentTime;
+            currentAudio.play();
+            currentAudio.onended = playNextSong;
+        }
+    });
+
+    window.addEventListener('beforeunload', function () {
+        const currentAudio = document.getElementById(`audio-${currentSongIndex}`);
+        if (isSongPlaying) {
+            localStorage.setItem('songCurrentTime', currentAudio.currentTime);
+        }
+    });
 
     function shareSong(title, author, songPath) {
         if (navigator.share) {
@@ -88,62 +123,58 @@ $conn->close();
         }
     }
 
+    AOS.init({
+        easing: 'ease-out-back',
+        duration: 4000,
+        once: true, 
+    });
 </script>
 
-
 <style>
-     * {
-            font-family: 'Roboto', sans-serif;
-        }
+    * {
+        font-family: 'Roboto', sans-serif;
+    }
     .song-grid {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 20px;
     }
-
-   
     .song-card {
         background-color: #181818;
         border-radius: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        width: calc(20% - 20px); /
+        width: calc(20% - 20px);
         margin: 10px 0;
         padding: 15px;
         display: flex;
         flex-direction: column;
         align-items: center;
         transition: transform 0.3s ease;
-        box-sizing: border-box; 
+        box-sizing: border-box;
     }
-
     .song-card:hover {
         transform: scale(1.05);
     }
-
     .song-img img {
-        width: 100%; 
+        width: 100%;
         height: 150px;
-        object-fit: cover; 
+        object-fit: cover;
         border-radius: 15px;
     }
-
     .song-info {
         text-align: center;
         margin-top: 10px;
     }
-
     .song-info h2 {
         font-size: 16px;
         margin-bottom: 5px;
         color: #fff;
     }
-
     .song-info p {
         font-size: 12px;
         color: #b3b3b3;
     }
-
     .song-controls {
         display: flex;
         justify-content: space-around;
@@ -151,7 +182,6 @@ $conn->close();
         width: 100%;
         margin-top: 10px;
     }
-
     button, .download-btn, .share-btn {
         background-color: #1db954;
         border: none;
@@ -162,40 +192,31 @@ $conn->close();
         text-align: center;
         font-size: 14px;
     }
-
     button i, .download-btn i, .share-btn i {
         font-size: 16px;
     }
-
     button:hover, .download-btn:hover, .share-btn:hover {
         background-color: #1ed760;
     }
-
     .download-btn {
         background-color: #404040;
     }
-
     .download-btn:hover {
         background-color: #505050;
     }
-
     .share-btn {
-        background-color: #3b5998; 
+        background-color: #3b5998;
     }
-
     .share-btn:hover {
         background-color: #4c70ba;
     }
-
     audio {
         display: none;
     }
-
     @media screen and (max-width: 992px) {
         .song-grid {
             justify-content: center;
         }
-
         .song-card {
             width: 90%;
         }
