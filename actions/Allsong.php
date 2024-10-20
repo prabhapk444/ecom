@@ -6,6 +6,7 @@ $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     echo '<div class="song-grid">';
+    $songIndex = 0; // Index to track the order of songs
     while ($row = $result->fetch_assoc()) {
         $songTitle = $row['title'];
         $songAuthor = $row['author'];
@@ -21,14 +22,15 @@ if ($result->num_rows > 0) {
                 <h2>Song: ' . $songTitle . '</h2>
                 <p>Author: ' . $songAuthor . '</p>
             </div>
-            <audio id="audio-' . $row['id'] . '" src="' . $songPath . '"></audio>
+            <audio id="audio-' . $songIndex . '" src="' . $songPath . '"></audio>
             <div class="song-controls">
-                <button class="play-btn" onclick="playSong(' . $row['id'] . ')"><i class="fas fa-play"></i></button>
-                <button class="stop-btn" onclick="stopSong(' . $row['id'] . ')"><i class="fas fa-stop"></i></button>
+                <button class="play-btn" onclick="playSong(' . $songIndex . ')"><i class="fas fa-play"></i></button>
+                <button class="stop-btn" onclick="stopSong(' . $songIndex . ')"><i class="fas fa-stop"></i></button>
                 <a href="' . $songPath . '" download class="download-btn"><i class="fas fa-download"></i></a>
                 <button class="share-btn" onclick="shareSong(\'' . $songTitle . '\', \'' . $songAuthor . '\', \'' . $songPath . '\')"><i class="fas fa-share"></i></button>
             </div>
         </div>';
+        $songIndex++;
     }
     echo '</div>';
 } else {
@@ -37,9 +39,39 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
- <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
-<script>
+
+ <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+ <script>
+    let currentSongIndex = 0;
+    const totalSongs = <?php echo $songIndex; ?>; 
+    function playSong(index) {
+        stopAllSongs();
+        currentSongIndex = index;
+        const currentAudio = document.getElementById(`audio-${index}`);
+        currentAudio.play();
+        currentAudio.onended = playNextSong;
+    }
+
+    function stopSong(index) {
+        const currentAudio = document.getElementById(`audio-${index}`);
+        currentAudio.pause();
+        currentAudio.currentTime = 0; 
+    }
+
+    function stopAllSongs() {
+        for (let i = 0; i < totalSongs; i++) {
+            stopSong(i);
+        }
+    }
+
+    function playNextSong() {
+        currentSongIndex++;
+        if (currentSongIndex < totalSongs) {
+            playSong(currentSongIndex);
+        }
+    }
+
     function shareSong(title, author, songPath) {
         if (navigator.share) {
             navigator.share({
@@ -55,13 +87,9 @@ $conn->close();
             alert('Your browser does not support the Web Share API. You can manually share the song link: ' + window.location.origin + '/' + songPath);
         }
     }
-    
-    AOS.init({
-        easing: 'ease-out-back',
-        duration: 4000,
-        once: true, 
-    });
+
 </script>
+
 
 <style>
      * {
