@@ -243,17 +243,17 @@
     if ($result->num_rows > 0) {
         $songs = [];
         while ($row = $result->fetch_assoc()) {
-            $songs[] = $row;  // Store all songs in an array
+            $songs[] = $row;  
         }
 
         echo '<ul class="song-list" id="songList">';
-        $serialNumber = 1;  // Initialize the serial number
+        $serialNumber = 1;  
         foreach ($songs as $row) {
             $songTitle = $row['title'];
             $songAuthor = $row['author'];
             $songPath = 'Admin/' . $row['song_path'];
             $songImagePath = 'Admin/' . $row['image_path'];
-            $createdAt = $row['created_at'];  // Assuming you have this field in your database
+            $createdAt = $row['created_at'];  
 
             echo '
             <li class="song-item" data-title="' . $songTitle . '" data-author="' . $songAuthor . '" data-created_at="' . $createdAt . '" data-id="' . $row['id'] . '">
@@ -273,7 +273,7 @@
                 </div>
             </li>';
             
-            $serialNumber++;  // Increment the serial number
+            $serialNumber++;  
         }
         echo '</ul>';
     } else {
@@ -286,12 +286,10 @@
     <script>
         let songsArray = [];
 
-        // Store the songs as an array for sorting
-        document.querySelectorAll('.song-item').forEach(item => {
+                document.querySelectorAll('.song-item').forEach(item => {
             songsArray.push(item);
         });
 
-        // Function to share the song
         function shareSong(title, author, songPath) {
             if (navigator.share) {
                 navigator.share({
