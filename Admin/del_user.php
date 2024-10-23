@@ -4,14 +4,13 @@ require("./db.php");
 $response = ['success' => false, 'message' => ''];
 
 if (isset($_POST['id'])) {
-    $id = intval($_POST['id']); // Ensure ID is an integer to prevent SQL injection
-
-    // Prepare delete statement
+    $id = intval($_POST['id']);
+   
     $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
     $stmt->bind_param("i", $id);
 
     if ($stmt->execute()) {
-        $response['success'] = true; // Deletion successful
+        $response['success'] = true; 
     } else {
         $response['message'] = "Error: " . $stmt->error;
     }
@@ -21,6 +20,5 @@ if (isset($_POST['id'])) {
 
 $conn->close();
 
-// Return JSON response
 echo json_encode($response);
 ?>

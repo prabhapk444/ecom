@@ -9,19 +9,20 @@ $alertMessage = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
-    $stmt = $conn->prepare("SELECT full_name, password FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, full_name, password FROM users WHERE email = ?");
     if ($stmt) {
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($full_name, $hashed_password);
+            $stmt->bind_result($id,$full_name, $hashed_password);
             $stmt->fetch();
-
+            
             if (password_verify($password, $hashed_password)) {
                 $_SESSION['email'] = $email;
                 $_SESSION['username'] = $full_name;
+                $_SESSION['id']=$id;
                 $alertType = 'success';
                 $alertTitle = 'Login Successful!';
                 $alertMessage = 'You have been logged in successfully.';

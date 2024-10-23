@@ -102,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Register</title>
     <link rel="stylesheet" href="./assets/css/style.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
@@ -161,12 +161,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: green;
         }
 
+        .input-container {
+            position: relative;
+            width: 90%;
+            margin-bottom: 15px;
+        }
+
         input[type="text"],
         input[type="email"],
         input[type="password"] {
-            width: 90%;
+            width: 100%;
             padding: 10px;
-            margin-bottom: 15px;
+            padding-right: 40px;
             border: 2px solid black;
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.2);
@@ -179,6 +185,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         input[type="password"]:focus {
             background: rgba(255, 255, 255, 0.4);
             outline: none;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #1db954;
         }
 
         button {
@@ -241,10 +256,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="form-container">
             <h1>Create an Account</h1>
             <form action="" method="POST" autocomplete="off">
-                <input type="text" name="full_name" placeholder="Full Name" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" id="password" required>
-                <input type="password" name="confirm_password" placeholder="Confirm Password" id="confirm_password" required onkeyup="checkPassword()">
+                <div class="input-container">
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                </div>
+                <div class="input-container">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="input-container">
+                    <input type="password" name="password" placeholder="Password" id="password" required>
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+                </div>
+                <div class="input-container">
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" id="confirm_password" required onkeyup="checkPassword()">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
+                </div>
                 <small id="password_error" style="color:red;"></small>
                 <button type="submit">Register</button>
             </form>
@@ -281,6 +306,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 passwordError.textContent = "";
             }
         }
+
+        function togglePassword(fieldId, icon) {
+            var field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                field.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 </html>
+

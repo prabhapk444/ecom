@@ -3,15 +3,9 @@ require("./db.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['id'];
-
-    // Prepare the SQL DELETE statement
     $sql = "DELETE FROM songs WHERE id = ?";
-    
-    // Prepare the statement
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
-
-    // Execute the statement
     if ($stmt->execute()) {
         header("Location: dashboard.php");
         exit();

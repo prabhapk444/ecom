@@ -1,7 +1,6 @@
 <?php
 require("./db.php");
 
-// Fetch users from the database
 $query = "SELECT * FROM users";
 $result = $conn->query($query);
 
@@ -104,7 +103,6 @@ $conn->close();
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
                         if (response.success) {
-                            // Remove the user row from the table
                             const userRow = document.getElementById('user-' + userId);
                             userRow.parentNode.removeChild(userRow);
                         } else {

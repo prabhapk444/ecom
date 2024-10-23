@@ -1,33 +1,48 @@
 <?php
-require("db.php");
-
-$data = json_decode(file_get_contents("php://input"));
-$songId = $data->id;
-
-// Here you would check if the song is already liked or not, 
-// and then toggle the like status in the database accordingly.
-// Assuming you have a `liked_songs` table with `user_id` and `song_id` columns.
-
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
-$userId = $_SESSION['user_id']; // Assuming you have user ID in session
+include 'db.php';
 
-$checkLike = $conn->prepare("SELECT * FROM liked_songs WHERE user_id = ? AND song_id = ?");
-$checkLike->bind_param("ii", $userId, $songId);
-$checkLike->execute();
-$result = $checkLike->get_result();
+$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : null;
+$song_id = isset($_POST['song_id']) ? $_POST['song_id'] : null;
 
-if ($result->num_rows > 0) {
-    // Already liked, so remove like
-    $deleteLike = $conn->prepare("DELETE FROM liked_songs WHERE user_id = ? AND song_id = ?");
-    $deleteLike->bind_param("ii", $userId, $songId);
-    $success = $deleteLike->execute();
+$response = [];
+
+if ($user_id && $song_id) {
+
+    $query = "SELECT * FROM liked_songs WHERE user_id = ? AND song_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ii', $user_id, $song_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $query = "DELETE FROM liked_songs WHERE user_id = ? AND song_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ii', $user_id, $song_id);
+        if ($stmt->execute()) {
+            $response['message'] = 'Song unliked successfully!';
+        } else {
+            $response['message'] = 'Error unliking the song.';
+        }
+    } else {
+        
+        $query = "INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ii', $user_id, $song_id);
+        if ($stmt->execute()) {
+            $response['message'] = 'Song liked successfully!';
+        } else {
+            $response['message'] = 'Error liking the song.';
+        }
+    }
 } else {
-    // Not liked, so add like
-    $addLike = $conn->prepare("INSERT INTO liked_songs (user_id, song_id) VALUES (?, ?)");
-    $addLike->bind_param("ii", $userId, $songId);
-    $success = $addLike->execute();
+    $response['message'] = 'Invalid request.';
 }
 
-echo json_encode(['success' => $success]);
-$conn->close();
+
+header('Content-Type: application/json'); 
+echo json_encode($response); 
+exit; 
 ?>
