@@ -5,14 +5,25 @@ $sql = "SELECT * FROM songs";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    echo '<div class="song-grid">';
-    $songIndex = 0;
+    $songsByCategory = [];
+    $allSongs = []; // Array to store all songs
+
     while ($row = $result->fetch_assoc()) {
-        $songTitle = $row['title'];
-        $songAuthor = $row['author'];
-        $songPath = 'Admin/' . $row['song_path'];
-        $songImagePath = 'Admin/' . $row['image_path'];
-        
+        $allSongs[] = $row; // Store all songs
+        $songsByCategory[$row['category']][] = $row; // Group songs by category
+    }
+
+    echo '<div class="song-container">';
+
+    // Display all songs first
+    echo '<h3 class="category-title">All Songs</h3>';
+    echo '<div class="song-grid">';
+    foreach ($allSongs as $song) {
+        $songTitle = htmlspecialchars($song['title']);
+        $songAuthor = htmlspecialchars($song['author']);
+        $songPath = 'Admin/' . htmlspecialchars($song['song_path']);
+        $songImagePath = 'Admin/' . htmlspecialchars($song['image_path']);
+
         echo '
         <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
             <div class="song-img">
@@ -22,91 +33,82 @@ if ($result->num_rows > 0) {
                 <h2>Song: ' . $songTitle . '</h2>
                 <p>Author: ' . $songAuthor . '</p>
             </div>
-            <audio id="audio-' . $songIndex . '" src="' . $songPath . '"></audio>
+            <audio id="audio-' . $song['id'] . '" src="' . $songPath . '"></audio>
             <div class="song-controls">
-                <button class="play-btn" onclick="playSong(' . $songIndex . ')"><i class="fas fa-play"></i></button>
-                <button class="stop-btn" onclick="stopSong(' . $songIndex . ')"><i class="fas fa-stop"></i></button>
-                <a href="' . $songPath . '" download class="download-btn"><i class="fas fa-download"></i></a>
-                <button class="share-btn" onclick="shareSong(\'' . $songTitle . '\', \'' . $songAuthor . '\', \'' . $songPath . '\')"><i class="fas fa-share"></i></button>
+                <button class="play-btn" onclick="playSong(' . $song['id'] . ')">
+                    <i class="fas fa-play play-icon"></i>
+                </button>
+                <button class="stop-btn" onclick="stopSong(' . $song['id'] . ')">
+                    <i class="fas fa-stop stop-icon"></i>
+                </button>
+                <a href="' . $songPath . '" download class="download-btn">
+                    <i class="fas fa-download download-icon"></i>
+                </a>
+                <button class="share-btn" onclick="shareSong(\'' . $songTitle . '\', \'' . $songAuthor . '\', \'' . $songPath . '\')">
+                    <i class="fas fa-share share-icon"></i>
+                </button>
+                <button class="like-btn" id="like-btn-' . $song['id'] . '" onclick="toggleLike(' . $song['id'] . ')">
+                    <i class="fas fa-thumbs-up like-icon"></i>
+                </button>
             </div>
         </div>';
-        $songIndex++;
     }
-    echo '</div>';
+    echo '</div>'; // Close song-grid
+
+    // Display songs by category
+    foreach ($songsByCategory as $category => $songs) {
+        echo '<h3 class="category-title">' . htmlspecialchars($category) . '</h3>';
+        echo '<div class="song-grid">';
+
+        foreach ($songs as $song) {
+            $songTitle = htmlspecialchars($song['title']);
+            $songAuthor = htmlspecialchars($song['author']);
+            $songPath = 'Admin/' . htmlspecialchars($song['song_path']);
+            $songImagePath = 'Admin/' . htmlspecialchars($song['image_path']);
+
+            echo '
+            <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
+                <div class="song-img">
+                    <img src="' . $songImagePath . '" alt="Song Image">
+                </div>
+                <div class="song-info">
+                    <h2>Song: ' . $songTitle . '</h2>
+                    <p>Author: ' . $songAuthor . '</p>
+                </div>
+                <audio id="audio-' . $song['id'] . '" src="' . $songPath . '"></audio>
+                <div class="song-controls">
+                    <button class="play-btn" onclick="playSong(' . $song['id'] . ')">
+                        <i class="fas fa-play play-icon"></i>
+                    </button>
+                    <button class="stop-btn" onclick="stopSong(' . $song['id'] . ')">
+                        <i class="fas fa-stop stop-icon"></i>
+                    </button>
+                    <a href="' . $songPath . '" download class="download-btn">
+                        <i class="fas fa-download download-icon"></i>
+                    </a>
+                    <button class="share-btn" onclick="shareSong(\'' . $songTitle . '\', \'' . $songAuthor . '\', \'' . $songPath . '\')">
+                        <i class="fas fa-share share-icon"></i>
+                    </button>
+                    <button class="like-btn" id="like-btn-' . $song['id'] . '" onclick="toggleLike(' . $song['id'] . ')">
+                        <i class="fas fa-thumbs-up like-icon"></i>
+                    </button>
+                </div>
+            </div>';
+        }
+        echo '</div>'; // Close song-grid
+    }
+
+    echo '</div>'; // Close song-container
 } else {
     echo "<p>No songs available.</p>";
 }
 
 $conn->close();
 ?>
+
 <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 
 <script>
-    let currentSongIndex = localStorage.getItem('currentSongIndex') ? parseInt(localStorage.getItem('currentSongIndex')) : 0;
-    let isSongPlaying = localStorage.getItem('isSongPlaying') === 'true' ? true : false;
-    let songCurrentTime = localStorage.getItem('songCurrentTime') ? parseFloat(localStorage.getItem('songCurrentTime')) : 0;
-    const totalSongs = <?php echo $songIndex; ?>; 
-    function playSong(index) {
-        stopAllSongs();
-        currentSongIndex = index;
-        const currentAudio = document.getElementById(`audio-${index}`);
-        currentAudio.currentTime = songCurrentTime; 
-        currentAudio.play();
-        currentAudio.onended = playNextSong;
-        isSongPlaying = true;
-        savePlayState(); 
-    }
-
-    function stopSong(index) {
-        const currentAudio = document.getElementById(`audio-${index}`);
-        currentAudio.pause();
-        currentAudio.currentTime = 0; 
-        isSongPlaying = false;
-        savePlayState();
-    }
-
-
-    function stopAllSongs() {
-        for (let i = 0; i < totalSongs; i++) {
-            const audioElement = document.getElementById(`audio-${i}`);
-            audioElement.pause();
-        }
-    }
-
-  
-    function playNextSong() {
-        currentSongIndex++;
-        if (currentSongIndex < totalSongs) {
-            playSong(currentSongIndex);
-        } else {
-            isSongPlaying = false;
-            savePlayState();
-        }
-    }
-
-    function savePlayState() {
-        localStorage.setItem('currentSongIndex', currentSongIndex);
-        localStorage.setItem('isSongPlaying', isSongPlaying);
-        localStorage.setItem('songCurrentTime', document.getElementById(`audio-${currentSongIndex}`).currentTime);
-    }
-
-   
-    window.addEventListener('load', function () {
-        if (isSongPlaying) {
-            const currentAudio = document.getElementById(`audio-${currentSongIndex}`);
-            currentAudio.currentTime = songCurrentTime;
-            currentAudio.play();
-            currentAudio.onended = playNextSong;
-        }
-    });
-
-    window.addEventListener('beforeunload', function () {
-        const currentAudio = document.getElementById(`audio-${currentSongIndex}`);
-        if (isSongPlaying) {
-            localStorage.setItem('songCurrentTime', currentAudio.currentTime);
-        }
-    });
-
     function shareSong(title, author, songPath) {
         if (navigator.share) {
             navigator.share({
@@ -122,103 +124,186 @@ $conn->close();
             alert('Your browser does not support the Web Share API. You can manually share the song link: ' + window.location.origin + '/' + songPath);
         }
     }
+    
+    let currentAudio = null;
 
-    AOS.init({
-        easing: 'ease-out-back',
-        duration: 4000,
-        once: true, 
-    });
+    function saveAudioState(audio, id) {
+        sessionStorage.setItem('currentSongId', id);
+        sessionStorage.setItem('audioSrc', audio.src);
+    }
+
+    function playSong(id) {
+        const audio = document.getElementById('audio-' + id);
+        
+        if (currentAudio && currentAudio.id !== 'audio-' + id) {
+            currentAudio.pause();  
+        }
+
+        if (audio.paused) {
+            audio.play();  
+        }
+
+        currentAudio = audio;
+
+        saveAudioState(audio, id);
+
+        audio.onended = function() {
+            const nextSong = document.querySelector(`#audio-${id + 1}`);
+            if (nextSong) {
+                playSong(id + 1);
+            }
+        };
+    }
+
+    function resumeSong() {
+        const savedSongId = sessionStorage.getItem('currentSongId');
+        const savedAudioSrc = sessionStorage.getItem('audioSrc');
+        if (savedSongId && savedAudioSrc) {
+            const audio = document.getElementById('audio-' + savedSongId);
+            if (audio && savedAudioSrc === audio.src) {
+                audio.play();
+                currentAudio = audio;
+            }
+        }
+    }
+
+    window.onload = function() {
+        resumeSong();
+    };
+
+    function stopSong(id) {
+        const audio = document.getElementById('audio-' + id);
+        audio.pause();
+        sessionStorage.removeItem('currentSongId');
+        sessionStorage.removeItem('audioSrc');
+    }
+
+    function toggleLike(songId) {
+        const likeButton = document.getElementById('like-btn-' + songId);
+        likeButton.classList.toggle('liked');
+        // Optional: Handle the logic for liking the song (e.g., send to server)
+    }
 </script>
 
 <style>
     * {
         font-family: 'Roboto', sans-serif;
     }
+
+    .song-container {
+        padding: 20px;
+        background-color: #121212;
+    }
+
+    .category-title {
+        color: #ffffff;
+        font-size: 24px;
+        margin: 20px 0 10px;
+        text-transform: uppercase;
+    }
+
     .song-grid {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 20px;
     }
+
     .song-card {
         background-color: #181818;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         width: calc(20% - 20px);
         margin: 10px 0;
         padding: 15px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        transition: transform 0.3s ease;
-        box-sizing: border-box;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .song-card:hover {
-        transform: scale(1.05);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     }
+
     .song-img img {
         width: 100%;
         height: 150px;
         object-fit: cover;
-        border-radius: 15px;
+        border-radius: 10px;
     }
+
     .song-info {
         text-align: center;
         margin-top: 10px;
     }
+
     .song-info h2 {
         font-size: 16px;
         margin-bottom: 5px;
         color: #fff;
     }
+
     .song-info p {
-        font-size: 12px;
+        font-size: 14px;
         color: #b3b3b3;
     }
+
     .song-controls {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        width: 100%;
         margin-top: 10px;
+        display: flex;
+        gap: 10px;
     }
-    button, .download-btn, .share-btn {
-        background-color: #1db954;
+
+    .play-btn,
+    .stop-btn,
+    .download-btn,
+    .share-btn,
+    .like-btn {
+        background: none;
         border: none;
-        color: white;
-        border-radius: 50%;
-        padding: 8px;
         cursor: pointer;
-        text-align: center;
-        font-size: 14px;
+        color: #fff;
+        font-size: 20px;
+        transition: transform 0.2s;
     }
-    button i, .download-btn i, .share-btn i {
-        font-size: 16px;
+
+    .play-btn:hover,
+    .stop-btn:hover,
+    .download-btn:hover,
+    .share-btn:hover,
+    .like-btn:hover {
+        transform: scale(1.1);
     }
-    button:hover, .download-btn:hover, .share-btn:hover {
-        background-color: #1ed760;
+
+    /* Icon Colors */
+    .download-icon {
+        color: #007bff; /* Blue for download button */
     }
-    .download-btn {
-        background-color: #404040;
+
+    .share-icon {
+        color: #fcb900; /* Yellow for share button */
     }
-    .download-btn:hover {
-        background-color: #505050;
+
+    .like-icon {
+        color: #d32f2f; /* Red for like button */
     }
-    .share-btn {
-        background-color: #3b5998;
+
+    .like-btn.liked .like-icon {
+        color: #ff4081; /* Pink when liked */
     }
-    .share-btn:hover {
-        background-color: #4c70ba;
-    }
-    audio {
-        display: none;
-    }
-    @media screen and (max-width: 992px) {
-        .song-grid {
-            justify-content: center;
-        }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
         .song-card {
-            width: 90%;
+            width: calc(50% - 20px); /* 2 cards per row */
+        }
+    }
+
+    @media (max-width: 600px) {
+        .song-card {
+            width: 100%; /* 1 card per row */
         }
     }
 </style>

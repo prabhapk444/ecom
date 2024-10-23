@@ -197,20 +197,8 @@ body {
         <h1>Welcome to Melody Hub!</h1>
         <p>Enjoy your music experience.</p>
         <div class="song-container">
-            <h3>All Songs</h3>
         <?php include './actions/Allsong.php';?>
-
-        <div class="song-container">
-            <h3>Sad Songs</h3>
-        <?php include './actions/sad.php';?>
-        <div class="song-container">
-            <h3>Love Songs</h3>
-        <?php include './actions/love.php';?>
-        <div class="song-container">
-            <h3>English Songs</h3>
-        <?php include './actions/hollywood.php';?>
-    </div>
-
+        </div>
     </div>
 
     <script>
@@ -218,26 +206,7 @@ body {
         const sidebar = document.getElementById('sidebar');
         sidebar.classList.toggle('active');
     }
-    let currentAudio = null;
-
-        function playSong(id) {
-            const audio = document.getElementById('audio-' + id);
-            
-            if (currentAudio && currentAudio.id !== 'audio-' + id) {
-                currentAudio.pause();  
-            }
-
-            if (audio.paused) {
-                audio.play();  
-            }
-            
-            currentAudio = audio;  
-        }
-
-        function stopSong(id) {
-            const audio = document.getElementById('audio-' + id);
-            audio.pause();  
-        }
+    
 </script>
 
 </body>
