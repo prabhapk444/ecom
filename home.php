@@ -7,291 +7,19 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Melody Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/home.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-         * {
-            font-family: 'Roboto', sans-serif;
-        }
-body {
-    display: flex;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: white;
-    overflow-x: hidden;
-}
-
-.sidebar {
-    width: 200px;
-    background-color: #1e1e1e;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-.sidebar a:hover {
-    background-color: #282828;
-}
-
-.main-content {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto; 
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background: linear-gradient(to bottom, #1DB954, #191414); 
-    padding: 10px 20px;
-    border-radius: 10px;
-}
-
-.logo {
-    max-width: 120px;
-    height: auto;
-}
-
-.logout-btn {
-    background-color: transparent;
-    border: none;
-    color: white;
-    cursor: pointer;
-}
-
-.spotify-button {
-    text-align: center;
-    background-color: #1db954;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 20px;
-    color: white;
-    font-weight: bold;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.controls {
-    margin-top: 10px;
-}
-
-.toggle-sidebar {
-    display: none;
-}h3 {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #fff;
-    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-    animation: shadowMove 2s infinite alternate;
-}
-
-@keyframes shadowMove {
-    0% { text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); }
-    50% { text-shadow: 10px 10px 10px rgba(255, 0, 0, 0.7); }
-    100% { text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); }
-}
-
-
-@media (max-width: 992px) {
-    body {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 9999;
-        display: none; 
-        background-color: #1e1e1e;
-    }
-
-    .sidebar.active {
-        display: flex; 
-    }
-
-    .main-content {
-        padding: 10px;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .logout-btn {
-        width: 100%;
-        margin-top: 10px;
-        text-align: center;
-    }
-
-    .spotify-button {
-        margin-top: 10px;
-    }
-
-    h1, p, {
-        text-align: center;
-    }
-    
-
-    .toggle-sidebar {
-        display: block; 
-        margin-bottom: 10px;
-        width: 100%;
-        padding: 10px;
-        background-color: #1db954;
-        color: white;
-        font-size: 18px;
-        text-align: center;
-        cursor: pointer;
-        border: none;
-    }
-
- 
-}
-.song-container {
-        padding: 20px;
-        background-color: #121212;
-    }
-
-    .category-title {
-        color: #ffffff;
-        font-size: 24px;
-        margin: 20px 0 10px;
-        text-transform: uppercase;
-    }
-
-    .song-grid {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 20px;
-    }
-
-    .song-card {
-        background-color: #181818;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        width: calc(20% - 20px);
-        margin: 10px 0;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .song-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .song-img img {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-
-    .song-info {
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    .song-info h2 {
-        font-size: 16px;
-        margin-bottom: 5px;
-        color: #fff;
-    }
-
-    .song-info p {
-        font-size: 14px;
-        color: #b3b3b3;
-    }
-
-    .song-controls {
-        margin-top: 10px;
-        display: flex;
-        gap: 10px;
-    }
-
-    .play-btn,
-    .stop-btn,
-    .download-btn,
-    .share-btn,
-    .like-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #fff;
-        font-size: 20px;
-        transition: transform 0.2s;
-    }
-
-    .play-btn:hover,
-    .stop-btn:hover,
-    .download-btn:hover,
-    .share-btn:hover,
-    .like-btn:hover {
-        transform: scale(1.1);
-    }
-
-    .download-icon {
-        color: #007bff; 
-    }
-
-    .share-icon {
-        color: #fcb900; 
-    }
-
-    .like-icon {
-        color: #d32f2f; 
-    }
-
-    .like-btn.liked .like-icon {
-        color: #ff4081;
-    }
-
-  
-    @media (max-width: 992px) {
-        .song-card {
-            width: calc(50% - 20px); 
-        }
-    }
-
-    @media (max-width: 600px) {
-        .song-card {
-            width: 100%; 
-        }
-    }
-</style>
 </head>
 <body>
     <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
     <div class="sidebar" id="sidebar">
         <a href="search.php">Search</a>
-        <a href="like_song.php">Liked Songs</a>
+        <a href="likedsong.php">Liked Songs</a>
         <a href="#">Playlists</a>
-        
+
     </div>
 
     <div class="main-content">
@@ -313,6 +41,9 @@ body {
         </div>
         <h1>Welcome to Melody Hub!</h1>
         <p>Enjoy your music experience.</p>
+        
+
+        
         <?php
 require("db.php");
 
@@ -495,32 +226,68 @@ $conn->close();
     }
 
     
-
     function toggleLike(songId) {
     const userId = <?php echo isset($_SESSION['id']) ? json_encode($_SESSION['id']) : 'null'; ?>;
 
-   
-    console.log('User ID:', userId);
-
-
     if (userId === null) {
         alert('You need to be logged in to like a song.');
-        return; 
+        return;
     }
 
     $.ajax({
-    type: 'POST',
-    url: 'toggle_like.php',
-    data: { song_id: songId, user_id: userId }, 
-    success: function(response) {
-        console.log('Raw response:', response); 
-        const result = JSON.parse(response);
-        alert(result.message); 
-    },
-    error: function() {
-        alert('An error occurred while toggling like.');
+        type: 'POST',
+        url: 'toggle_like.php',
+        data: { song_id: songId, user_id: userId },
+        dataType: 'json', 
+        success: function(response) {
+            console.log('Raw response:', response);
+            if (typeof response === 'object') {
+                handleResponse(response, songId);
+            } else {
+                try {
+                    const result = JSON.parse(response);
+                    handleResponse(result, songId);
+                } catch (error) {
+                    console.error('Error parsing response:', error, 'Response received:', response);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An unexpected error occurred while processing the response.',
+                        icon: 'error'
+                    });
+                }
+            }
+        },
+        error: function() {
+            Swal.fire({
+                title: 'Error',
+                text: 'An error occurred while toggling like.',
+                icon: 'error'
+            });
+        }
+    });
+}
+
+function handleResponse(result, songId) {
+    if (result.success) {
+        const likeButton = document.getElementById('like-btn-' + songId);
+        if (result.liked) {
+            likeButton.classList.add('liked');
+        } else {
+            likeButton.classList.remove('liked');
+        }
+
+        Swal.fire({
+            title: 'Success',
+            text: result.message,
+            icon: 'success'
+        });
+    } else {
+        Swal.fire({
+            title: 'Error',
+            text: result.message,
+            icon: 'error'
+        });
     }
-});
 }
 
     function toggleSidebar() {
@@ -528,7 +295,9 @@ $conn->close();
         sidebar.classList.toggle('active');
     }
     
+    
 </script>
+
 
 </body>
 </html>

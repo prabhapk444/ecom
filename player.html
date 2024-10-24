@@ -1,0 +1,19 @@
+<!-- <link rel="stylesheet" href="./assets/css/like.css"> -->
+<div class="player-controls">
+    <div class="current-song-info">
+        <img id="currentSongImage" src="" alt="Current Song" style="display:none; width: 50px; height: 50px;">
+        <div>
+            <div id="currentSongTitle">No song playing</div>
+            <div id="currentSongAuthor"></div>
+        </div>
+    </div>
+    <input type="range" id="progressBar" value="0" min="0" max="100" step="1" oninput="seekSong(event)">
+    <div class="time-info">
+        <span id="currentTime">00:00</span>
+    </div>
+    <div class="controls">
+        <button onclick="playPreviousSong()"><i class="fas fa-backward"></i></button>
+        <button id="playPauseButton" onclick="togglePlayPause()"><i class="fas fa-play"></i></button>
+        <button onclick="playNextSong()"><i class="fas fa-forward"></i></button>
+    </div>
+</div>
