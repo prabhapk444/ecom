@@ -108,11 +108,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="./assets/css/preloader.css">
     <link rel="stylesheet" href="./assets/css/register.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    
+    <div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+    </div>
+
     <div class="left"></div>
     <div class="right">
         <div class="form-container">
@@ -146,7 +155,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     icon: '<?php echo $alertType; ?>',
                     title: '<?php echo addslashes($alertTitle); ?>',
                     text: '<?php echo addslashes($alertMessage); ?>',
-                    confirmButtonText: 'OK'
+                    showConfirmButton: false, 
+                    timer: 3000,
                 }).then((result) => {
                     <?php if ($alertType === 'success') : ?>
                         window.location.href = "login.php";
@@ -157,6 +167,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php endif; ?>
 
     <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.querySelector('.form-container').style.opacity = '1';
+        document.querySelector('.left').style.opacity = '1';
+    }, 4000);
+});
+
+
+
         function checkPassword() {
             var password = document.getElementById("password").value;
             var confirmPassword = document.getElementById("confirm_password").value;

@@ -90,7 +90,7 @@ let currentAudio = null;
         document.getElementById('playPauseButton').innerHTML = '<i class="fas fa-play"></i>';
     }
 
-    
+   
     function shareSong(title, author, songPath) {
         if (navigator.share) {
             navigator.share({
@@ -106,3 +106,5 @@ let currentAudio = null;
             alert('Your browser does not support the Web Share API. You can manually share the song link: ' + window.location.origin + '/' + songPath);
         }
     }
+
+   

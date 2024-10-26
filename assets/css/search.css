@@ -13,10 +13,16 @@ body {
     padding: 20px;
 }
 
+.content {
+    opacity: 0;
+    transition: opacity 0.5s; 
+}
+
 .search-container {
     text-align: center;
     margin-bottom: 20px;
 }
+
 
 .search-container input[type="text"] {
     padding: 12px;

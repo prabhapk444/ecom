@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
+    header("Location: adminlogin.php");
+    exit();
+}
+
 require("./db.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -25,6 +32,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete Song</title>
+    <link rel="stylesheet" href="./../assets/css/preloader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -40,6 +49,7 @@ $conn->close();
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            opacity:0;
         }
         h2 {
             text-align: center;
@@ -77,6 +87,15 @@ $conn->close();
     </style>
 </head>
 <body>
+
+
+<div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+    </div>
+
     <div class="container">
         <h2>Delete Song</h2>
         <form action="" method="post">
@@ -87,6 +106,15 @@ $conn->close();
             <button type="submit" class="btn btn-danger">Delete Song</button>
         </form>
     </div>
+
+   <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.querySelector('.container').style.opacity = '1';
+    }, 4000); 
+});
+   </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

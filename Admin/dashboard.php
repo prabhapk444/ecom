@@ -24,6 +24,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="./../assets/css/preloader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -248,40 +250,68 @@ body {
 }
 
 @media (max-width: 992px) {
+  
     .sidebar {
-        width: 80px;
+        width: 130px;
     }
-
+    
     .main-content {
-        margin-left: 80px;
+        margin-left: 130px;
         width: calc(100% - 80px);
+        padding: 10px;
     }
 
+    .counter {
+        flex-direction: column;
+        gap: 10px; 
+    }
+
+   
     .counter .col {
-        flex: 1 1 calc(50% - 20px); 
+        flex: 1 1 100%;
+        min-width: auto;
+        padding: 15px;
+        margin: 0;
+        text-align: left;
     }
 
+    .username-marquee {
+        font-size: 1.2rem;
+    }
+
+    .sidebar ul li i, .toggle-btn i {
+        font-size: 1.1rem;
+        margin-right: 10px;
+    }
+    .counter .col i {
+        font-size: 22px;
+    }
     .toggle-btn {
         position: fixed;
-        bottom: 10px;
-        right: 10px;
-        z-index: 1001;
+        bottom: 15px;
+        right: 15px;
     }
 }
 
 @media (max-width: 768px) {
-    .sidebar {
-        width: 80px;
-    }
-
-    .main-content {
-        margin-left: 80px;
-        width: calc(100% - 80px);
-    }
 
     .counter .col {
-        flex: 1 1 calc(100% - 20px); 
+        padding: 10px;
+        font-size: 0.9rem;
     }
+    
+   
+    .main-content h1 {
+        font-size: 1.5rem;
+    }
+    .username-marquee {
+        font-size: 1rem;
+    }
+    
+    .sidebar.collapsed ul li span {
+        display: none;
+    }
+    
 }
 
     </style>
@@ -290,14 +320,13 @@ body {
     <div class="sidebar" id="sidebar">
         <div>
             <div class="logo">
-                <i class="fas fa-music"></i>
                 <span>Admin</span>
             </div>
             <ul>
-                <li onclick="navigateTo('songs.php')" data-tooltip="Songs">
-                     <i class="fas fa-music"></i>
-                    <span>Songs</span>
-                </li>
+            <li onclick="navigateTo('songs.php')" data-tooltip="Songs">
+                <i class="fas fa-music"></i>
+                <span>Songs</span>
+            </li>
                 <li onclick="navigateTo('users.php')" data-tooltip="Users">
                     <i class="fas fa-users"></i>
                     <span>Users</span>
@@ -350,7 +379,7 @@ body {
         $totallikes = $likesRow['total_likedsongs'];
 
         echo "<div class='col'>";
-        echo "<i class='fas fa-box'></i>";
+        echo "  <i class='fas fa-music'></i>";
         echo "<p class='counter-value' style='font-size: 18px;'>$totalSongs Songs</p>";  
         echo "</div>";
         

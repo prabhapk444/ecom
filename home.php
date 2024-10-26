@@ -1,5 +1,9 @@
 <?php
-session_start();  
+session_start(); 
+if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
+    header("Location: login.php");
+    exit();
+} 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,19 +11,21 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Melody Hub</title>
-<link rel="stylesheet" href="./assets/css/home.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="./assets/css/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
+
+
+
     <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
     <div class="sidebar" id="sidebar">
         <a href="search.php">Search</a>
         <a href="likedsong.php">Liked Songs</a>
-        <a href="#">Playlists</a>
-
+        <a href="account.php">Account</a>
     </div>
 
     <div class="main-content">
@@ -153,79 +159,10 @@ $conn->close();
 
     </div>
 
+    <script src="./assets/js/player.js"></script>
+
     <script>
-    
-
-    function shareSong(title, author, songPath) {
-        if (navigator.share) {
-            navigator.share({
-                title: `Listen to ${title} by ${author}`,
-                text: `Check out this song: ${title} by ${author}`,
-                url: window.location.origin + '/' + songPath
-            }).then(() => {
-                console.log('Song shared successfully!');
-            }).catch((error) => {
-                console.error('Error sharing song:', error);
-            });
-        } else {
-            alert('Your browser does not support the Web Share API. You can manually share the song link: ' + window.location.origin + '/' + songPath);
-        }
-    }
-    
-    let currentAudio = null;
-
-    function saveAudioState(audio, id) {
-        sessionStorage.setItem('currentSongId', id);
-        sessionStorage.setItem('audioSrc', audio.src);
-    }
-
-    function playSong(id) {
-        const audio = document.getElementById('audio-' + id);
         
-        if (currentAudio && currentAudio.id !== 'audio-' + id) {
-            currentAudio.pause();  
-        }
-
-        if (audio.paused) {
-            audio.play();  
-        }
-
-        currentAudio = audio;
-
-        saveAudioState(audio, id);
-
-        audio.onended = function() {
-            const nextSong = document.querySelector(`#audio-${id + 1}`);
-            if (nextSong) {
-                playSong(id + 1);
-            }
-        };
-    }
-
-    function resumeSong() {
-        const savedSongId = sessionStorage.getItem('currentSongId');
-        const savedAudioSrc = sessionStorage.getItem('audioSrc');
-        if (savedSongId && savedAudioSrc) {
-            const audio = document.getElementById('audio-' + savedSongId);
-            if (audio && savedAudioSrc === audio.src) {
-                audio.play();
-                currentAudio = audio;
-            }
-        }
-    }
-
-    window.onload = function() {
-        resumeSong();
-    };
-
-    function stopSong(id) {
-        const audio = document.getElementById('audio-' + id);
-        audio.pause();
-        sessionStorage.removeItem('currentSongId');
-        sessionStorage.removeItem('audioSrc');
-    }
-
-    
     function toggleLike(songId) {
     const userId = <?php echo isset($_SESSION['id']) ? json_encode($_SESSION['id']) : 'null'; ?>;
 
@@ -290,10 +227,7 @@ function handleResponse(result, songId) {
     }
 }
 
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('active');
-    }
+  
     
     
 </script>

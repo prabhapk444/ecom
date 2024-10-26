@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
+    header("Location: adminlogin.php");
+    exit();
+}
+
 require("./db.php");
 
 $sql = "SELECT * FROM songs";
@@ -12,6 +18,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Song List</title>
+    <link rel="stylesheet" href="./../assets/css/preloader.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -23,6 +30,7 @@ $result = $conn->query($sql);
         .search-container {
             text-align: center;
             margin-bottom: 20px;
+            opacity: 0;
         }
 
         .search-container input[type="text"] {
@@ -39,6 +47,8 @@ $result = $conn->query($sql);
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
+            opacity: 0;
+            gap:20px;
         }
 
         .card {
@@ -55,7 +65,9 @@ $result = $conn->query($sql);
         }
 
         .card img {
-            max-width: 100%;
+            width: 100%;
+            height:210px;
+            object-fit: cover;
             border-radius: 8px;
             margin-bottom: 15px;
         }
@@ -126,6 +138,13 @@ $result = $conn->query($sql);
 </head>
 <body>
 
+    <div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+    </div>
+
     <div class="search-container">
         <input type="text" id="searchBar" onkeyup="searchSongs()" placeholder="Search for songs...">
     </div>
@@ -157,6 +176,17 @@ $result = $conn->query($sql);
     </div>
 
     <script>
+    
+
+    document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.querySelector('.container').style.opacity = '1';
+        document.querySelector('.search-container').style.opacity = '1';
+    }, 4000); 
+});
+     
+
         let currentAudio = null;
 
         function playSong(id) {

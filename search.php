@@ -1,10 +1,15 @@
 <?php
-session_start();
+session_start(); 
+if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
+    header("Location: login.php");
+    exit();
+} 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="./assets/css/preloader.css">
     <link rel="stylesheet" href="./assets/css/search.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
@@ -13,6 +18,14 @@ session_start();
 </head>
 <body>
 
+    <div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+    </div>
+
+<div class="content">
     <div class="search-container">
         <input type="text" id="searchBar" onkeyup="searchSongs()" placeholder="Search for songs...">
     </div>
@@ -75,7 +88,19 @@ session_start();
     $conn->close();
     ?>
 
+</div>
+    
     <script>
+
+        
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.querySelector('.content').style.opacity = '1';
+    }, 4000); 
+});
+
+
         let songsArray = [];
 
                 document.querySelectorAll('.song-item').forEach(item => {

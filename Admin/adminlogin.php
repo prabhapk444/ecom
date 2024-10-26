@@ -2,16 +2,19 @@
 session_start();
 session_regenerate_id(true);
 include("db.php");
-    ?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
+    <link rel="stylesheet" href="./../assets/css/preloader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
     <style>
         * {
             font-family: 'Roboto', sans-serif;
@@ -19,6 +22,7 @@ include("db.php");
         .container {
             display: flex;
             justify-content: center;
+            opacity:0;
         }
 
         body {
@@ -89,9 +93,10 @@ include("db.php");
             font-weight:bold;
         }
         
-        h1 {
+        .main {
             font-size:1.4rem;
             text-align:center;
+            opacity:0;
         }
 
         @media screen and (max-width: 992px) {
@@ -113,7 +118,16 @@ include("db.php");
     </style>
 </head>
 <body>
-     <h1>Admin Login page</h1>
+
+
+    <div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+    </div>
+
+     <h1 class="main">Admin Login page</h1>
     <div class="container">
         <img src="./../assets/img/Buffer.gif" alt="my" class="image"> 
         <form class="form" method="post" action="" autocomplete="off">
@@ -134,25 +148,24 @@ include("db.php");
         $password = $_POST['password'];
         $username = $conn->real_escape_string($username);
         $password = $conn->real_escape_string($password);
-        
         $sql = "SELECT * FROM admin WHERE username = '$username' AND password = '$password'";
         $result = $conn->query($sql);
         
         if ($result->num_rows > 0) {
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $username;
+            $_SESSION['role'] = 'admin';
             echo "<script>
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                   text: 'Redirecting to dashboard...',
-                    confirmButtonText: 'OK',
-                    onClose: function() {
-                        window.location.href = 'dashboard.php';
-                    }
-                }).then(function() {
-                    window.location.href = 'dashboard.php';
-                });
+            icon: 'success',
+            title: 'Success!',
+            text: 'Redirecting to dashboard...',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        setTimeout(function() {
+            window.location.href = 'dashboard.php';
+        }, 1600);
             </script>";
             exit;
         } else {
@@ -167,4 +180,17 @@ include("db.php");
     }
     ?>
 </body>
+<script>
+
+    
+    document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.querySelector('.container').style.opacity = '1';
+        document.querySelector('.main').style.opacity = '1';
+    }, 4000); 
+});
+
+</script>
+
 </html>

@@ -1,27 +1,40 @@
+<?php
+session_start(); 
+if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
+    header("Location: login.php");
+    exit();
+} 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liked Songs</title>
+    <link rel="stylesheet" href="./assets/css/preloader.css">
     <link rel="stylesheet" href="./assets/css/like.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-   
 </head>
 <body>
 
-<div class="container">
+<div id="preloader" class="preloader">
+    <div class="wave"><i class="fas fa-music"></i></div>
+    <div class="wave"><i class="fas fa-music"></i></div>
+    <div class="wave"><i class="fas fa-music"></i></div>
+    <div class="wave"><i class="fas fa-music"></i></div>
+</div>
+
+<div class="container"> 
     <h1>Your Liked Songs</h1>
 
     <?php
-    session_start(); 
+   
     
     include("db.php");
 
     if (isset($_SESSION['id'])) {
         $user_id = $_SESSION['id'];
 
-        
         $query = "SELECT song_id FROM liked_songs WHERE user_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $user_id);
@@ -34,7 +47,6 @@
         }
 
         if (count($songIds) > 0) {
-         
             $placeholders = implode(',', array_fill(0, count($songIds), '?'));
             $query = "SELECT * FROM songs WHERE id IN ($placeholders)";
             $stmt = $conn->prepare($query);
@@ -86,30 +98,48 @@
 
     $conn->close();
     ?>
-
-
-
 </div>
+
 <script>
-    function loadPlayer() {
-        const playerContainer = document.createElement('div');
-        playerContainer.id = 'playerContainer';
 
-        fetch('player.html')
-            .then(response => response.text())
-            .then(data => {
-                playerContainer.innerHTML = data;
-                document.body.appendChild(playerContainer);
-             
-                const script = document.createElement('script');
-                script.src = './assets/js/script.js';
-                document.body.appendChild(script);
-            });
-    }
-    window.onload = loadPlayer; 
+    
+ document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() { 
+        document.getElementById('preloader').style.display = 'none';
+        
+        const container = document.querySelector('.container');
+        container.style.visibility = 'visible';
+        container.style.opacity = '1';
+        
+        const playerContainer = document.querySelector('#playerContainer');
+        if (playerContainer) {
+            playerContainer.style.visibility = 'visible';
+            playerContainer.style.opacity = '1';
+        }
+    }, 4000); 
+});
+
+
+function loadPlayer() {
+    const playerContainer = document.createElement('div');
+    playerContainer.id = 'playerContainer';
+    playerContainer.style.visibility = 'hidden';  
+    playerContainer.style.opacity = '0';         
+
+    fetch('player.html')
+        .then(response => response.text())
+        .then(data => {
+            playerContainer.innerHTML = data;
+            document.body.appendChild(playerContainer);
+            const script = document.createElement('script');
+            script.src = './assets/js/script.js';
+            document.body.appendChild(script);
+        });
+}
+
+loadPlayer();
+ 
 </script>
-
-
 
 </body>
 </html>

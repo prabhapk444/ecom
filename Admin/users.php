@@ -1,4 +1,10 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
+    header("Location: adminlogin.php");
+    exit();
+}
 require("./db.php");
 
 $query = "SELECT * FROM users";
@@ -20,6 +26,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users Information</title>
+    <link rel="stylesheet" href="./../assets/css/preloader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -35,9 +43,22 @@ $conn->close();
         .search-bar {
             margin-bottom: 20px;
         }
+        .container{
+            opacity: 0;
+        }
+        
     </style>
 </head>
 <body>
+
+
+    <div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+    </div>
+
     <div class="container">
         <h2>Users Information</h2>
         <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search Users..." onkeyup="filterUsers()">
@@ -67,6 +88,13 @@ $conn->close();
     </div>
 
     <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.getElementById('preloader').style.display = 'none';
+        document.querySelector('.container').style.opacity = '1';
+    }, 4000); 
+});
         function filterUsers() {
             const searchInput = document.getElementById('searchInput').value.toLowerCase();
             const userTable = document.getElementById('userTable');

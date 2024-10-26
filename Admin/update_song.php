@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['role'] !== 'admin') {
+    header("Location: adminlogin.php");
+    exit();
+}
+
 require("./db.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -59,6 +66,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Song</title>
+    <link rel="stylesheet" href="./../assets/css/preloader.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
@@ -75,6 +84,7 @@ $conn->close();
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            opacity: 0;
         }
         h2 {
             text-align: center;
@@ -112,37 +122,76 @@ $conn->close();
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Update Song</h2>
-        <form id="updateForm" action="" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="id">Song ID:</label>
-                <input type="number" id="id" name="id" required>
-            </div>
-            <div class="form-group">
-                <label for="title">Song Title:</label>
-                <input type="text" id="title" name="title" required>
-            </div>
-            <div class="form-group">
-                <label for="song">Mp3 File (Leave blank if not changing):</label>
-                <input type="file" id="song" name="song" accept="audio/*">
-            </div>
-            <div class="form-group">
-                <label for="image">Image File (Leave blank if not changing):</label>
-                <input type="file" id="image" name="image" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label for="author">Author:</label>
-                <input type="text" id="author" name="author" required>
-            </div>
-            <div class="form-group">
-                <label for="category">Category:</label>
-                <input type="text" id="category" name="category" required>
-            </div>
-            <button type="submit" class="btn btn-success">Update Song</button>
-        </form>
+
+    <div id="preloader" class="preloader">
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
+        <div class="wave"><i class="fas fa-music"></i></div>
     </div>
 
+    <div class="container">
+    <h2>Update Song</h2>
+    <form id="updateForm" action="" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="id">Song ID:</label>
+            <input type="number" id="id" name="id" required>
+        </div>
+        <div class="form-group">
+            <label for="title">Song Title:</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="song">Mp3 File (Leave blank if not changing):</label>
+            <input type="file" id="song" name="song" accept=".mp3">
+        </div>
+        <div class="form-group">
+            <label for="image">Image File (Leave blank if not changing):</label>
+            <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png">
+        </div>
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" id="author" name="author" required>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
+        </div>
+        <button type="submit" class="btn btn-success">Update Song</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            document.getElementById('preloader').style.display = 'none';
+            document.querySelector('.container').style.opacity = '1';
+        }, 4000); 
+    });
+
+    document.getElementById('updateForm').addEventListener('submit', function(event) {
+        const songInput = document.getElementById('song');
+        const imageInput = document.getElementById('image');
+
+       
+        if (songInput.files.length > 0) {
+            const songFile = songInput.files[0];
+            if (songFile.type !== 'audio/mpeg') {
+                alert("Please upload a valid MP3 file.");
+                event.preventDefault();
+                return;
+            }
+        }
+        if (imageInput.files.length > 0) {
+            const imageFile = imageInput.files[0];
+            if (!['image/jpeg', 'image/png'].includes(imageFile.type)) {
+                alert('Please upload a valid image file (JPG, JPEG, or PNG).');
+                event.preventDefault();
+                return;
+            }
+        }
+    });
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
