@@ -20,103 +20,72 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
 <body>
 
 
+<button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+<div class="sidebar" id="sidebar">
+<a href="search.php"><i class="fas fa-search"></i> Search</a>
+    <a href="likedsong.php"><i class="fas fa-heart"></i> Liked Songs</a>
+    <a href="account.php"><i class="fas fa-user"></i> Profile</a>
+    <?php
+    require("db.php");
+    $categoryQuery = "SELECT DISTINCT category FROM songs";
+    $categoryResult = $conn->query($categoryQuery);
 
-    <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
-    <div class="sidebar" id="sidebar">
-        <a href="search.php">Search</a>
-        <a href="likedsong.php">Liked Songs</a>
-        <a href="account.php">Account</a>
+    if ($categoryResult->num_rows > 0) {
+        echo '<div class="category-links">
+        <h4>Songs Categories</h4>';
+        while ($categoryRow = $categoryResult->fetch_assoc()) {
+            $category = htmlspecialchars($categoryRow['category']);
+            echo '<a href="#' . $category . '">' . $category . '</a>';
+        }
+        echo '</div>';
+    }
+    ?>
+</div>
+
+<div class="main-content">
+    <div class="header">
+        <img src="./assets/img/logo-Photoroom.png" alt="Logo" class="logo"> 
+        <div style="flex-grow: 1; text-align: right;">
+            <button class="spotify-button">
+                <i class="fab fa-spotify"></i>
+                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Login'; ?>
+            </button>
+            <?php if (isset($_SESSION['username'])): ?>
+                <form action="logout.php" method="POST" style="display:inline;">
+                    <button type="submit" class="logout-btn" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i> 
+                    </button>
+                </form>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <div class="main-content">
-        <div class="header">
-            <img src="./assets/img/logo-Photoroom.png" alt="Logo" class="logo"> 
-            <div style="flex-grow: 1; text-align: right;">
-                <button class="spotify-button">
-                    <i class="fab fa-spotify"></i>
-                    <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Login'; ?>
-                </button>
-                <?php if (isset($_SESSION['username'])): ?>
-                    <form action="logout.php" method="POST" style="display:inline;">
-                        <button type="submit" class="logout-btn" title="Logout">
-                            <i class="fas fa-sign-out-alt"></i> 
-                        </button>
-                    </form>
-                <?php endif; ?>
-            </div>
-        </div>
-        <h1>Welcome to Melody Hub!</h1>
-        <p>Enjoy your music experience.</p>
-        
+    <h1>Welcome to Melody Hub!</h1>
+    <p>Enjoy your music experience.</p>
 
-        
-        <?php
-require("db.php");
+    <?php
+    $sql = "SELECT * FROM songs";
+    $result = $conn->query($sql);
 
-$sql = "SELECT * FROM songs";
-$result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        $songsByCategory = [];
+        $allSongs = []; 
 
-if ($result->num_rows > 0) {
-    $songsByCategory = [];
-    $allSongs = []; 
+        while ($row = $result->fetch_assoc()) {
+            $allSongs[] = $row;
+            $songsByCategory[$row['category']][] = $row; 
+        }
 
-    while ($row = $result->fetch_assoc()) {
-        $allSongs[] = $row;
-        $songsByCategory[$row['category']][] = $row; 
-    }
-
-    echo '<div class="song-container">';
-
-    echo '<h3 class="category-title">All Songs</h3>';
-    echo '<div class="song-grid">';
-    foreach ($allSongs as $song) {
-        $songTitle = htmlspecialchars($song['title']);
-        $songAuthor = htmlspecialchars($song['author']);
-        $songPath = 'Admin/' . htmlspecialchars($song['song_path']);
-        $songImagePath = 'Admin/' . htmlspecialchars($song['image_path']);
-
-        echo '
-        <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
-            <div class="song-img">
-                <img src="' . $songImagePath . '" alt="Song Image">
-            </div>
-            <div class="song-info">
-                <h2>Song: ' . $songTitle . '</h2>
-                <p>Author: ' . $songAuthor . '</p>
-            </div>
-            <audio id="audio-' . $song['id'] . '" src="' . $songPath . '"></audio>
-            <div class="song-controls">
-                <button class="play-btn" onclick="playSong(' . $song['id'] . ')">
-                    <i class="fas fa-play play-icon"></i>
-                </button>
-                <button class="stop-btn" onclick="stopSong(' . $song['id'] . ')">
-                    <i class="fas fa-stop stop-icon"></i>
-                </button>
-                <a href="' . $songPath . '" download class="download-btn">
-                    <i class="fas fa-download download-icon"></i>
-                </a>
-                <button class="share-btn" onclick="shareSong(\'' . $songTitle . '\', \'' . $songAuthor . '\', \'' . $songPath . '\')">
-                    <i class="fas fa-share share-icon"></i>
-                </button>
-                <button class="like-btn" id="like-btn-' . $song['id'] . '" onclick="toggleLike(' . $song['id'] . ')">
-                    <i class="fas fa-thumbs-up like-icon"></i>
-                </button>
-            </div>
-        </div>';
-    }
-    echo '</div>';
-
-  
-    foreach ($songsByCategory as $category => $songs) {
-        echo '<h3 class="category-title">' . htmlspecialchars($category) . '</h3>';
+        echo '<div class="song-container">';
+        echo '<h3 class="category-title">All Songs</h3>';
         echo '<div class="song-grid">';
-
-        foreach ($songs as $song) {
+        
+        foreach ($allSongs as $song) {
             $songTitle = htmlspecialchars($song['title']);
             $songAuthor = htmlspecialchars($song['author']);
             $songPath = 'Admin/' . htmlspecialchars($song['song_path']);
             $songImagePath = 'Admin/' . htmlspecialchars($song['image_path']);
-
+            
             echo '
             <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
                 <div class="song-img">
@@ -146,18 +115,58 @@ if ($result->num_rows > 0) {
                 </div>
             </div>';
         }
+        echo '</div>';
+
+        foreach ($songsByCategory as $category => $songs) {
+            echo '<h3 id="' . htmlspecialchars($category) . '" class="category-title">' . htmlspecialchars($category) . '</h3>';
+            echo '<div class="song-grid">';
+
+            foreach ($songs as $song) {
+                $songTitle = htmlspecialchars($song['title']);
+                $songAuthor = htmlspecialchars($song['author']);
+                $songPath = 'Admin/' . htmlspecialchars($song['song_path']);
+                $songImagePath = 'Admin/' . htmlspecialchars($song['image_path']);
+
+                echo '
+                <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
+                    <div class="song-img">
+                        <img src="' . $songImagePath . '" alt="Song Image">
+                    </div>
+                    <div class="song-info">
+                        <h2>Song: ' . $songTitle . '</h2>
+                        <p>Author: ' . $songAuthor . '</p>
+                    </div>
+                    <audio id="audio-' . $song['id'] . '" src="' . $songPath . '"></audio>
+                    <div class="song-controls">
+                        <button class="play-btn" onclick="playSong(' . $song['id'] . ')">
+                            <i class="fas fa-play play-icon"></i>
+                        </button>
+                        <button class="stop-btn" onclick="stopSong(' . $song['id'] . ')">
+                            <i class="fas fa-stop stop-icon"></i>
+                        </button>
+                        <a href="' . $songPath . '" download class="download-btn">
+                            <i class="fas fa-download download-icon"></i>
+                        </a>
+                        <button class="share-btn" onclick="shareSong(\'' . $songTitle . '\', \'' . $songAuthor . '\', \'' . $songPath . '\')">
+                            <i class="fas fa-share share-icon"></i>
+                        </button>
+                        <button class="like-btn" id="like-btn-' . $song['id'] . '" onclick="toggleLike(' . $song['id'] . ')">
+                            <i class="fas fa-thumbs-up like-icon"></i>
+                        </button>
+                    </div>
+                </div>';
+            }
+            echo '</div>'; 
+        }
+
         echo '</div>'; 
+    } else {
+        echo "<p>No songs available.</p>";
     }
 
-    echo '</div>'; 
-} else {
-    echo "<p>No songs available.</p>";
-}
-
-$conn->close();
-?>
-
-    </div>
+    $conn->close();
+    ?>
+</div>
 
     <script src="./assets/js/player.js"></script>
 
