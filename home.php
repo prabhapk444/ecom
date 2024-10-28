@@ -1,9 +1,26 @@
 <?php
 session_start(); 
+
 if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
     header("Location: login.php");
     exit();
 } 
+
+include("db.php");
+$user_id = $_SESSION['id'];
+$query = "SELECT full_name, profile_image FROM users WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $full_name = $user['full_name'];
+    $profile_image = $user['profile_image'] ? $user['profile_image'] : 'no-image'; 
+} else {
+    echo "User not found.";
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,10 +38,12 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
 
 
 <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+
 <div class="sidebar" id="sidebar">
-<a href="search.php"><i class="fas fa-search"></i> Search</a>
+    <a href="search.php"><i class="fas fa-search"></i> Search</a>
     <a href="likedsong.php"><i class="fas fa-heart"></i> Liked Songs</a>
     <a href="account.php"><i class="fas fa-user"></i> Profile</a>
+    
     <?php
     require("db.php");
     $categoryQuery = "SELECT DISTINCT category FROM songs";
@@ -45,11 +64,11 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
 <div class="main-content">
     <div class="header">
         <img src="./assets/img/logo-Photoroom.png" alt="Logo" class="logo"> 
-        <div style="flex-grow: 1; text-align: right;">
-            <button class="spotify-button">
-                <i class="fab fa-spotify"></i>
-                <?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Login'; ?>
-            </button>
+    <div style="flex-grow: 1; text-align: right;">
+        <div class="profile-container">
+            <img src="<?php echo htmlspecialchars($profile_image); ?>" alt="Profile Image" class="profile-image">
+            <p><?php echo htmlspecialchars($full_name); ?></p>
+        </div>
             <?php if (isset($_SESSION['username'])): ?>
                 <form action="logout.php" method="POST" style="display:inline;">
                     <button type="submit" class="logout-btn" title="Logout">
@@ -58,7 +77,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
                 </form>
             <?php endif; ?>
         </div>
-    </div>
+    </div><br>
 
     <h1>Welcome to Melody Hub!</h1>
     <p>Enjoy your music experience.</p>
@@ -236,8 +255,7 @@ function handleResponse(result, songId) {
     }
 }
 
-  
-    
+
     
 </script>
 

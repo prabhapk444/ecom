@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db.php'; 
+include 'db.php';
 
 require '././PHPMailer/src/Exception.php';
 require '././PHPMailer/src/PHPMailer.php';
@@ -19,7 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
-    if (empty($full_name) || empty($email) || empty($password) || empty($confirm_password)) {
+    $profile_image = $_FILES['profile_image'];
+    if (empty($full_name) || empty($email) || empty($password) || empty($confirm_password) || empty($profile_image['name'])) {
         $alertType = 'error';
         $alertTitle = 'All Fields Required';
         $alertMessage = 'Please fill in all the required fields.';
@@ -32,76 +33,91 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $alertTitle = 'Invalid Password';
         $alertMessage = 'Password must contain at least one uppercase letter, one number, and one special character.';
     } else {
-        $check_email_stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-        if ($check_email_stmt) {
-            $check_email_stmt->bind_param("s", $email);
-            $check_email_stmt->execute();
-            $result = $check_email_stmt->get_result();
+        $allowed_extensions = ['jpg', 'jpeg', 'png'];
+        $file_extension = strtolower(pathinfo($profile_image['name'], PATHINFO_EXTENSION));
 
-            if ($result->num_rows > 0) {
-                $alertType = 'error';
-                $alertTitle = 'Email Exists';
-                $alertMessage = 'Email already exists. Please use a different email.';
-            } else {
-               
-                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        if (!in_array($file_extension, $allowed_extensions)) {
+            $alertType = 'error';
+            $alertTitle = 'Invalid Image Format';
+            $alertMessage = 'Only JPG, JPEG, and PNG files are allowed.';
+        } else {
+            $check_email_stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+            if ($check_email_stmt) {
+                $check_email_stmt->bind_param("s", $email);
+                $check_email_stmt->execute();
+                $result = $check_email_stmt->get_result();
 
-                $stmt = $conn->prepare("INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)");
-                if ($stmt) {
-                    $stmt->bind_param("sss", $full_name, $email, $hashed_password);
-                    if ($stmt->execute()) {
-                       
-                        $mail = new PHPMailer(true);
-                        try {
-                           
-                            $mail->isSMTP();
-                            $mail->Host = 'smtp.gmail.com'; 
-                            $mail->SMTPAuth = true;
-                            $mail->Username = 'karanprabha22668@gmail.com'; 
-                            $mail->Password = 'hrmq uoyw zory obcg';
-                            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                            $mail->Port = 587;
+                if ($result->num_rows > 0) {
+                    $alertType = 'error';
+                    $alertTitle = 'Email Exists';
+                    $alertMessage = 'Email already exists. Please use a different email.';
+                } else {
+                    $upload_dir = 'uploads/';
+                    $image_path = $upload_dir . uniqid() . '.' . $file_extension;
 
-                            $mail->setFrom('karanprabha22668@gmail.com', 'Admin');
-                            $mail->addAddress($email, $full_name);
+                    if (move_uploaded_file($profile_image['tmp_name'], $image_path)) {
+                        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-                        
-                            $mail->isHTML(true);
-                            $mail->Subject = 'Welcome to Melody Hub';
-                            $mail->Body    = '<h1>Welcome to Our Website, ' . $full_name . '!</h1><p>Your account has been successfully created.</p>';
+                        $stmt = $conn->prepare("INSERT INTO users (full_name, email, password, profile_image) VALUES (?, ?, ?, ?)");
+                        if ($stmt) {
+                            $stmt->bind_param("ssss", $full_name, $email, $hashed_password, $image_path);
+                            if ($stmt->execute()) {
+                              
+                                $mail = new PHPMailer(true);
+                                try {
+                                    $mail->isSMTP();
+                                    $mail->Host = 'smtp.gmail.com';
+                                    $mail->SMTPAuth = true;
+                                    $mail->Username = 'karanprabha22668@gmail.com';
+                                    $mail->Password = 'hrmq uoyw zory obcg';
+                                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                                    $mail->Port = 587;
 
-                            $mail->send();
+                                    $mail->setFrom('karanprabha22668@gmail.com', 'Admin');
+                                    $mail->addAddress($email, $full_name);
 
-                           
-                            $alertType = 'success';
-                            $alertTitle = 'Registration Successful';
-                            $alertMessage = 'Your account has been created successfully, and a confirmation email has been sent to your email address.';
-                        } catch (Exception $e) {
-                            $alertType = 'success';
-                            $alertTitle = 'Registration Successful';
-                            $alertMessage = 'Your account has been created successfully, but the confirmation email could not be sent.';
+                                    $mail->isHTML(true);
+                                    $mail->Subject = 'Welcome to Melody Hub';
+                                    $mail->Body    = '<h1>Welcome to Our Website, ' . $full_name . '!</h1><p>Your account has been successfully created.</p>';
+
+                                    $mail->send();
+
+                                    $alertType = 'success';
+                                    $alertTitle = 'Registration Successful';
+                                    $alertMessage = 'Your account has been created successfully, and a confirmation email has been sent to your email address.';
+                                } catch (Exception $e) {
+                                    $alertType = 'success';
+                                    $alertTitle = 'Registration Successful';
+                                    $alertMessage = 'Your account has been created successfully, but the confirmation email could not be sent.';
+                                }
+                            } else {
+                                $alertType = 'error';
+                                $alertTitle = 'Registration Failed';
+                                $alertMessage = 'An error occurred. Please try again later.';
+                            }
+                            $stmt->close();
+                        } else {
+                            $alertType = 'error';
+                            $alertTitle = 'Registration Failed';
+                            $alertMessage = 'An error occurred. Please try again later.';
                         }
                     } else {
                         $alertType = 'error';
-                        $alertTitle = 'Registration Failed';
-                        $alertMessage = 'An error occurred. Please try again later.';
+                        $alertTitle = 'Image Upload Failed';
+                        $alertMessage = 'Failed to upload the profile image.';
                     }
-                    $stmt->close();
-                } else {
-                    $alertType = 'error';
-                    $alertTitle = 'Registration Failed';
-                    $alertMessage = 'An error occurred. Please try again later.';
                 }
+                $check_email_stmt->close();
+            } else {
+                $alertType = 'error';
+                $alertTitle = 'Registration Failed';
+                $alertMessage = 'An error occurred. Please try again later.';
             }
-            $check_email_stmt->close();
-        } else {
-            $alertType = 'error';
-            $alertTitle = 'Registration Failed';
-            $alertMessage = 'An error occurred. Please try again later.';
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,24 +142,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="right">
         <div class="form-container">
             <h1>Create an Account</h1>
-            <form action="" method="POST" autocomplete="off">
+            <form action="" method="POST" autocomplete="off" enctype="multipart/form-data">
                 <div class="input-container">
-                    <input type="text" name="full_name" placeholder="Full Name" required>
+                  <input type="text" name="full_name" placeholder="Full Name" required>
                 </div>
                 <div class="input-container">
-                    <input type="email" name="email" placeholder="Email" required>
+                  <input type="email" name="email" placeholder="Email" required>
                 </div>
                 <div class="input-container">
-                    <input type="password" name="password" placeholder="Password" id="password" required>
-                    <i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+                  <input type="password" name="password" placeholder="Password" id="password" required>
+                  <i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
                 </div>
                 <div class="input-container">
-                    <input type="password" name="confirm_password" placeholder="Confirm Password" id="confirm_password" required onkeyup="checkPassword()">
-                    <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
+                  <input type="password" name="confirm_password" placeholder="Confirm Password" id="confirm_password" required onkeyup="checkPassword()">
+                  <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
+                </div>
+                <div class="input-container">
+                  <input type="file" name="profile_image" placeholde="Profile Picture"   accept=".jpg, .jpeg, .png" required>
                 </div>
                 <small id="password_error" style="color:red;"></small>
-                <button type="submit">Register</button>
-            </form>
+             <button type="submit">Register</button>
+</form>
+
             <p>Already have an account? <a href="login.php" style="color: #1db954;text-decoration:none;">Log in</a></p>
         </div>
     </div>

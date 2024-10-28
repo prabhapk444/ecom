@@ -10,6 +10,32 @@ background-color: #121212;
 color: #ecf0f1;
 overflow-x: hidden;
 }
+.profile-container {
+    position: absolute;
+    top:10px;
+    right:30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover; 
+    border: 3px solid #1db954; 
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.profile-container p {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: #ecf0f1;
+}
+
 
 .sidebar {
 width: 200px;
@@ -91,7 +117,7 @@ border-radius: 10px;
 
 
 .logo {
-    max-width: 120px;
+    max-width: 150px;
     height: auto;
     transition: transform 0.6s ease-in-out;
     transform-style: preserve-3d; 
@@ -107,6 +133,8 @@ background-color: transparent;
 border: none;
 color: white;
 cursor: pointer;
+position: relative;
+top:100px;
 }
 
 .spotify-button {
@@ -311,6 +339,38 @@ color: #d32f2f;
 .song-card {
     width: calc(50% - 20px); 
 }
+
+.logo{
+    width: 100px;
+    height: 100px;
+}
+.profile-image {
+    position: absolute;
+    width: 90px; 
+    top:40px;
+    height: 90px; 
+    border: 2px solid #1db954; 
+
+}
+
+.profile-container p {
+    font-size:1.1rem;
+    position: relative;
+    top:140px;
+}
+
+.logout-btn{
+  position: absolute;
+  top:170px;
+
+}
+
+h1{
+    text-align: center;
+    font-size:1.5rem;
+}
+
+
 }
 
 @media (max-width: 600px) {
