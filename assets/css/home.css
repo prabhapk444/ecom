@@ -22,8 +22,8 @@ overflow-x: hidden;
 }
 
 .profile-image {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover; 
     border: 3px solid #1db954; 
@@ -333,11 +333,21 @@ color: #d32f2f;
     color: #ff0000; 
 }
 
+.close-sidebar {
+    display: none;
+}
 
 
 @media (max-width: 992px) {
 .song-card {
     width: calc(50% - 20px); 
+}
+.sidebar.active {
+    display: flex;
+}
+
+.close-sidebar {
+    display: block;
 }
 
 .logo{
@@ -345,19 +355,22 @@ color: #d32f2f;
     height: 100px;
 }
 .profile-image {
-    position: absolute;
-    width: 90px; 
-    top:40px;
-    height: 90px; 
-    border: 2px solid #1db954; 
-
+    position: relative;
+    width: 60px;
+    height: 60px; 
+    border: 2px solid #1db954;
+    top: 50px; 
+    margin: 10px auto; 
 }
 
 .profile-container p {
-    font-size:1.1rem;
+    font-size: 1rem;
     position: relative;
-    top:140px;
+    top: 35px; 
+    text-align: center;
 }
+
+
 
 .logout-btn{
   position: absolute;

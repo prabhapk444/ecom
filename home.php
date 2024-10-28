@@ -40,6 +40,7 @@ if ($result->num_rows > 0) {
 <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
 
 <div class="sidebar" id="sidebar">
+<button class="close-sidebar" onclick="toggleSidebar()">✖</button>
     <a href="search.php"><i class="fas fa-search"></i> Search</a>
     <a href="likedsong.php"><i class="fas fa-heart"></i> Liked Songs</a>
     <a href="account.php"><i class="fas fa-user"></i> Profile</a>
@@ -190,6 +191,13 @@ if ($result->num_rows > 0) {
     <script src="./assets/js/player.js"></script>
 
     <script>
+
+        
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("active");
+}
+
         
     function toggleLike(songId) {
     const userId = <?php echo isset($_SESSION['id']) ? json_encode($_SESSION['id']) : 'null'; ?>;
