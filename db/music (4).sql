@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 26, 2024 at 03:47 PM
+-- Generation Time: Oct 28, 2024 at 01:58 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `music`
+-- Database: `melody hub`
 --
 
 -- --------------------------------------------------------
@@ -38,7 +38,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', 'admin123');
+(1, 'admin', 'admin');
 
 -- --------------------------------------------------------
 
@@ -51,18 +51,6 @@ CREATE TABLE `liked_songs` (
   `user_id` int(11) NOT NULL,
   `song_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `liked_songs`
---
-
-INSERT INTO `liked_songs` (`id`, `user_id`, `song_id`) VALUES
-(7, 9, 9),
-(15, 8, 14),
-(17, 8, 17),
-(18, 8, 16),
-(19, 8, 15),
-(20, 8, 12);
 
 -- --------------------------------------------------------
 
@@ -85,14 +73,14 @@ CREATE TABLE `songs` (
 --
 
 INSERT INTO `songs` (`id`, `created_at`, `title`, `song_path`, `image_path`, `author`, `category`) VALUES
-(9, '2024-10-19 08:00:57', 'heat waves', 'songs/Heat-Waves(PagalWorld).mp3', 'images/heatwaves.png', 'Glass Animals', 'hollywood'),
-(10, '2024-10-19 10:03:38', 'Bang Bang', 'songs/Bang-Bang-Bang.mp3', 'images/raju.png', 'Yuvan Shankar Raja', 'natpu'),
-(11, '2024-10-19 10:13:43', 'Yaarumillaa', 'songs/Yaarumillaa-MassTamilan.org.mp3', 'images/yaarumilla.png', 'Sid Sriram', 'sad'),
-(12, '2024-10-19 10:32:57', 'Adi Penne', 'songs/Adi Penne.mp3', 'images/adi penne.jpg', 'Stephen Zechariah', 'love'),
-(13, '2024-10-19 10:34:42', 'Vilagathey', 'songs/Vilagathey.mp3', 'images/vilagathey.jpg', 'Stephen Zechariah', 'love'),
-(14, '2024-10-19 10:44:37', 'Hayyoda', 'songs/Hayyoda-MassTamilan.dev.mp3', 'images/hayooda.png', 'Aniruth Ravichandar', 'love'),
-(15, '2024-10-19 10:50:49', 'Hawa-Hawa', 'songs/Hawa-Hawa.mp3', 'images/hawa.jpeg', 'Kathick,Saindhavi', 'love'),
-(16, '2024-10-19 10:54:00', 'Vinmeen-vithaiyil', 'songs/Vinmeen-Vithaiyil.mp3', 'images/vinmeen.jpg', 'Nivas k Prasana', 'love'),
+(9, '2024-10-19 08:00:57', 'heat waves', 'songs/Heat-Waves(PagalWorld).mp3', 'images/heatwaves.png', 'Glass Animals', 'English'),
+(10, '2024-10-19 10:03:38', 'Bang Bang', 'songs/Bang-Bang-Bang.mp3', 'images/raju.png', 'Yuvan Shankar Raja', 'Friendship'),
+(11, '2024-10-19 10:13:43', 'Yaarumillaa', 'songs/Yaarumillaa-MassTamilan.org.mp3', 'images/yaarumilla.png', 'Sid Sriram', 'Sad'),
+(12, '2024-10-19 10:32:57', 'Adi Penne', 'songs/Adi Penne.mp3', 'images/adi penne.jpg', 'Stephen Zechariah', 'Love'),
+(13, '2024-10-19 10:34:42', 'Vilagathey', 'songs/Vilagathey.mp3', 'images/vilagathey.jpg', 'Stephen Zechariah', 'Love'),
+(14, '2024-10-19 10:44:37', 'Hayyoda', 'songs/Hayyoda-MassTamilan.dev.mp3', 'images/hayooda.png', 'Aniruth Ravichandar', 'Love'),
+(15, '2024-10-19 10:50:49', 'Hawa-Hawa', 'songs/Hawa-Hawa.mp3', 'images/hawa.jpeg', 'Kathick,Saindhavi', 'Love'),
+(16, '2024-10-19 10:54:00', 'Vinmeen-vithaiyil', 'songs/Vinmeen-Vithaiyil.mp3', 'images/vinmeen.jpg', 'Nivas k Prasana', 'Love'),
 (17, '2024-10-26 07:58:23', 'Dynamite', 'songs/Dynamite(PagalNew.Com.Se).mp3', 'images/bts.png', 'BTS', 'POP');
 
 -- --------------------------------------------------------
@@ -107,16 +95,16 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `profile_image` varchar(1000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `full_name`, `email`, `password`, `created_at`, `updated_at`) VALUES
-(8, 'prabha', 'viperprabhakaran@gmail.com', '$2y$10$gry6O2snMvU3LeAB6lAw0OpZ51HlfivvbKR6.Rr3HkjaL/v5wf5Ji', '2024-10-18 17:23:25', '2024-10-25 05:47:08'),
-(9, 'pk', 'karanprabha22668@gmail.com', '$2y$10$xlxVcYXqz/aw0GRvLteusOQZSw0psbTHT5r1vyfrZwkPt7KSj9rfS', '2024-10-23 10:03:58', '2024-10-23 10:03:58');
+INSERT INTO `users` (`id`, `full_name`, `email`, `password`, `created_at`, `updated_at`, `profile_image`) VALUES
+(11, 'pk', 'viperprabhakaran@gmail.com', '$2y$10$XYbGgC2Mq8LguGIxl8ESZ.PRV/hGs4iteiQaUGFHotoH.mXk8Q1xG', '2024-10-28 07:59:26', '2024-10-28 12:08:44', 'uploads/671f7ecc0a4e0.jpg');
 
 --
 -- Indexes for dumped tables
@@ -164,7 +152,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `liked_songs`
 --
 ALTER TABLE `liked_songs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `songs`
@@ -176,7 +164,7 @@ ALTER TABLE `songs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables

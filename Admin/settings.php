@@ -22,7 +22,7 @@ include("db.php");
         .container {
             display: flex;
             justify-content: center;
-            opacity:0;
+            opacity: 0;
         }
         body {
             background-color: #fffffe;
@@ -30,7 +30,7 @@ include("db.php");
         .form {
             max-width: 320px;
             width: 100%;
-            height: 230px;
+            height: auto;
             padding: 20px;
             box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
             display: flex;
@@ -86,7 +86,14 @@ include("db.php");
         .main {
             font-size: 1.4rem;
             text-align: center;
-            opacity:0;
+            opacity: 0;
+        }
+        .toggle-password {
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 20px; 
+            z-index: 1;
         }
         @media screen and (max-width: 992px) {
             .container {
@@ -113,7 +120,6 @@ include("db.php");
         <div class="wave"><i class="fas fa-music"></i></div>
     </div>
 
-    
     <h1 class="main">Admin Credentials Update Page</h1>
     <div class="container">
         <img src="./../assets/img/Buffer.gif" alt="my" class="image"> 
@@ -121,7 +127,10 @@ include("db.php");
             <label for="username" class="label">Username</label>
             <input type="text" id="username" name="username" required class="input">
             <label for="new_password" class="label">New Password</label>
-            <input type="password" id="new_password" name="new_password" required class="input">
+            <div style="position: relative;">
+                <input type="password" id="new_password" name="new_password" required class="input">
+                <i class="fas fa-eye toggle-password" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+            </div>
             <input type="submit" class="submit" value="Update Password">
         </form>
     </div>
@@ -171,14 +180,27 @@ include("db.php");
     }
     ?>
     <script>
-          document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        document.getElementById('preloader').style.display = 'none';
-        document.querySelector('.container').style.opacity = '1';
-        document.querySelector('.main').style.opacity = '1';
-    }, 4000); 
-});
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('new_password');
+            const toggleIcon = document.getElementById('togglePassword');
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
 
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').style.display = 'none';
+                document.querySelector('.container').style.opacity = '1';
+                document.querySelector('.main').style.opacity = '1';
+            }, 4000); 
+        });
     </script>
 </body>
 </html>

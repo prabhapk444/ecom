@@ -32,7 +32,7 @@ include("db.php");
         .form {
             max-width: 320px;
             width: 100%;
-            height:230px;
+            height:auto;
             padding: 20px;
             box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
             display: flex;
@@ -134,8 +134,11 @@ include("db.php");
             <label for="username" class="label">Username</label>
             <input type="text" id="username" name="username" required class="input">
             <label for="password" class="label">Password</label>
+            <div style="position: relative;">
             <input type="password" id="password" name="password" required class="input">
-            <input type="submit" class="submit">
+            <i id="togglePassword" class="fas fa-eye" style="position: absolute; right: 10px; top: 30%; cursor: pointer;"></i>
+             </div>
+             <input type="submit" class="submit">
         </form>
     </div>
 
@@ -190,6 +193,16 @@ include("db.php");
         document.querySelector('.main').style.opacity = '1';
     }, 4000); 
 });
+
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function () {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+    
 
 </script>
 
