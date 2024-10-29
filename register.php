@@ -33,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $alertTitle = 'Invalid Password';
         $alertMessage = 'Password must contain at least one uppercase letter, one number, and one special character.';
     } else {
-        $allowed_extensions = ['jpg', 'jpeg', 'png'];
+        $allowed_extensions = ['jpg', 'jpeg'];
         $file_extension = strtolower(pathinfo($profile_image['name'], PATHINFO_EXTENSION));
 
         if (!in_array($file_extension, $allowed_extensions)) {
             $alertType = 'error';
             $alertTitle = 'Invalid Image Format';
-            $alertMessage = 'Only JPG, JPEG, and PNG files are allowed.';
+            $alertMessage = 'Only JPG, JPEG, files are allowed.';
         } else {
             $check_email_stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
             if ($check_email_stmt) {
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                   <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
                 </div>
                 <div class="input-container">
-                  <input type="file" name="profile_image" placeholde="Profile Picture"   accept=".jpg, .jpeg, .png" required>
+                  <input type="file" name="profile_image" placeholde="Profile Picture"   accept=".jpg, .jpeg" required>
                 </div>
                 <small id="password_error" style="color:red;"></small>
              <button type="submit">Register</button>

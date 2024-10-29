@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $upload_dir = 'uploads/';
         $file_extension = pathinfo($profile_image['name'], PATHINFO_EXTENSION);
-        $allowed_extensions = ['jpeg', 'jpg', 'png'];
+        $allowed_extensions = ['jpeg', 'jpg'];
         $new_image_path = $upload_dir . uniqid() . '.' . $file_extension;
 
         if (in_array($file_extension, $allowed_extensions) && move_uploaded_file($profile_image['tmp_name'], $new_image_path)) {
@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <br>
         <div class="input-container">
     <label for="profile" class="upload-label">Edit Profile</label>
-    <input type="file" name="profile" id="profile" loading="lazy" accept="image/jpeg, image/jpg, image/png" onchange="validateImage()" required>
+    <input type="file" name="profile" id="profile" loading="lazy" accept="image/jpeg, image/jpg" onchange="validateImage()" required>
     <small id="image_error" style="color:red;"></small>
 </div>
 
@@ -202,7 +202,7 @@ function validateImage() {
     var imageError = document.getElementById('image_error');
 
     if (!allowedExtensions.exec(filePath)) {
-        imageError.textContent = "Only JPG, JPEG, or PNG files are allowed.";
+        imageError.textContent = "Only JPG, JPEG, File Formats are allowed.";
         fileInput.value = ''; 
         return false;
     } else {

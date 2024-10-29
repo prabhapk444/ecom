@@ -147,7 +147,7 @@ $conn->close();
         </div>
         <div class="form-group">
             <label for="image">Image File (Leave blank if not changing):</label>
-            <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png">
+            <input type="file" id="image" name="image" accept=".jpg, .jpeg">
         </div>
         <div class="form-group">
             <label for="author">Author:</label>
@@ -184,8 +184,8 @@ $conn->close();
         }
         if (imageInput.files.length > 0) {
             const imageFile = imageInput.files[0];
-            if (!['image/jpeg', 'image/png'].includes(imageFile.type)) {
-                alert('Please upload a valid image file (JPG, JPEG, or PNG).');
+            if (!['image/jpeg', 'image/jpg'].includes(imageFile.type)) {
+                alert('Please upload a valid image file (JPG, JPEG).');
                 event.preventDefault();
                 return;
             }
