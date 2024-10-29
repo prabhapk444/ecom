@@ -77,8 +77,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $mail->addAddress($email, $full_name);
 
                                     $mail->isHTML(true);
-                                    $mail->Subject = 'Welcome to Melody Hub';
-                                    $mail->Body    = '<h1>Welcome to Our Website, ' . $full_name . '!</h1><p>Your account has been successfully created.</p>';
+                                    $mail->Subject = 'Welcome to Melody Hub - Your Musical Journey Begins!';
+                                    $mail->Body    = '
+                                      <div style="font-family: Arial, sans-serif; text-align: center; color: #333;">
+                                        <img src="./assets/img/logo-Photoroom.png" alt="Welcome to Melody Hub" style="width: 100%; max-width: 600px; height: auto; border-radius: 8px; margin-bottom: 20px;">
+                                          <h1 style="color: #4CAF50;">Welcome to Melody Hub, ' . htmlspecialchars($full_name) . '!</h1>
+                                            <p style="font-size: 16px; line-height: 1.6;text-align:justify;">
+                                            We’re thrilled to have you join our community! Get ready to dive into a world of music, creativity, and inspiration.
+                                            </p>
+                                            <p style="font-size: 14px; color: #555;text-align:justify;">
+                                            If you have any questions, feel free to reach out to us. Welcome aboard!
+                                            </p>
+                                            <p style="font-size: 16px; color: #4CAF50;text-align:justify;">
+                                            Happy Listening!<br>
+                                            The Melody Hub Team
+                                            </p>
+                                    </div>';
+
 
                                     $mail->send();
 

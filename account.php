@@ -42,8 +42,22 @@ function sendConfirmationEmail($email, $full_name) {
         $mail->addAddress($email, $full_name);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Account Update Successful';
-        $mail->Body = "<h1>Hello, $full_name!</h1><p>Your account details have been successfully updated.</p>";
+        $mail->isHTML(true);
+        $mail->Subject = 'Your Account Has Been Successfully Updated!';
+        $mail->Body = '
+            <div style="font-family: Arial, sans-serif; text-align: center; color: #333;">
+                <img src="./assets/img/logo-Photoroom.png" alt="Account Update Successful" style="width: 80px; height: 80px; margin-bottom: 20px;">
+                <h1 style="color: #4CAF50;">Hello, ' . htmlspecialchars($full_name) . '!</h1>
+                <p style="font-size: 16px; line-height: 1.6; text-align:justify;">
+                    We wanted to let you know that your account details have been updated successfully. 
+                    If you didn’t make this change, please contact our support team immediately.
+                </p>
+                <p style="font-size: 16px; color: #4CAF50;text-align:justify;">
+                    Thank you for being with us!<br>
+                    The Melody Hub Team
+                </p>
+            </div>';
+        
         $mail->send();
         return true;
     } catch (Exception $e) {
