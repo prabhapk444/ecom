@@ -155,7 +155,7 @@ $result = $conn->query($sql);
             while ($row = $result->fetch_assoc()) {
                 echo '
                 <div class="card">
-                    <img src="' . $row['image_path'] . '" alt="Song Image">
+                    <img src="' . $row['image_path'] . '" alt="Song Image" loading="lazy">
                     <div class="song-details">
                         <h3>' . $row['title'] . '</h3>
                         <p>' . $row['author'] . '</p>
@@ -186,6 +186,8 @@ $result = $conn->query($sql);
     }, 4000); 
 });
      
+
+
 
         let currentAudio = null;
 

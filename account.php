@@ -141,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <h1>Update Account Details</h1>
     <form action="" method="POST" autocomplete="off"  enctype="multipart/form-data">
         <div class="input-container">
-            <img src="<?php echo htmlspecialchars($profile_image);?>" alt="" srcset="">
+            <img src="<?php echo htmlspecialchars($profile_image);?>" alt="" srcset="" loading="lazy" >
         </div>
         <br>
         <div class="input-container">
     <label for="profile" class="upload-label">Edit Profile</label>
-    <input type="file" name="profile" id="profile" accept="image/jpeg, image/jpg, image/png" onchange="validateImage()" required>
+    <input type="file" name="profile" id="profile" loading="lazy" accept="image/jpeg, image/jpg, image/png" onchange="validateImage()" required>
     <small id="image_error" style="color:red;"></small>
 </div>
 

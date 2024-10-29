@@ -63,7 +63,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
             echo '
             <li class="song-item" data-title="' . $songTitle . '" data-author="' . $songAuthor . '" data-created_at="' . $createdAt . '" data-id="' . $row['id'] . '">
                 <div class="song-img">
-                    <img src="' . $songImagePath . '" alt="Song Image">
+                    <img src="' . $songImagePath . '" alt="Song Image" loading="lazy">
                 </div>
                 <div class="song-info">
                     <h2>' . $serialNumber . '. ' . $songTitle . '</h2>
@@ -99,6 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.content').style.opacity = '1';
     }, 4000); 
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const images = document.querySelectorAll("img.lazy-load");
+    images.forEach(img => {
+        img.src = img.dataset.src;
+    });
+});
+
 
 
         let songsArray = [];

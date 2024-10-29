@@ -64,10 +64,10 @@ if ($result->num_rows > 0) {
 
 <div class="main-content">
     <div class="header">
-        <img src="./assets/img/logo-Photoroom.png" alt="Logo" class="logo"> 
+        <img src="./assets/img/logo-Photoroom.png" alt="Logo" class="logo" loading="lazy" > 
     <div style="flex-grow: 1; text-align: right;">
         <div class="profile-container">
-            <img src="<?php echo htmlspecialchars($profile_image); ?>" alt="Profile Image" class="profile-image">
+            <img src="<?php echo htmlspecialchars($profile_image); ?>" alt="Profile Image" class="profile-image" loading="lazy" >
             <p><?php echo htmlspecialchars($full_name); ?></p>
         </div>
             <?php if (isset($_SESSION['username'])): ?>
@@ -109,7 +109,7 @@ if ($result->num_rows > 0) {
             echo '
             <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
                 <div class="song-img">
-                    <img src="' . $songImagePath . '" alt="Song Image">
+                    <img src="' . $songImagePath . '" alt="Song Image" loading="lazy" >
                 </div>
                 <div class="song-info">
                     <h2>Song: ' . $songTitle . '</h2>
@@ -150,7 +150,7 @@ if ($result->num_rows > 0) {
                 echo '
                 <div class="song-card" data-aos="zoom-in" data-aos-duration="800">
                     <div class="song-img">
-                        <img src="' . $songImagePath . '" alt="Song Image">
+                        <img src="' . $songImagePath . '" alt="Song Image" loading="lazy" >
                     </div>
                     <div class="song-info">
                         <h2>Song: ' . $songTitle . '</h2>
@@ -191,6 +191,13 @@ if ($result->num_rows > 0) {
     <script src="./assets/js/player.js"></script>
 
     <script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    const images = document.querySelectorAll("img.lazy-load");
+    images.forEach(img => {
+        img.src = img.dataset.src;
+    });
+});
 
         
 function toggleSidebar() {
@@ -262,6 +269,7 @@ function handleResponse(result, songId) {
         });
     }
 }
+
 
 
     
