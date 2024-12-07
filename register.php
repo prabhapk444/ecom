@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include 'db.php';
 
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     $mail->Host = 'smtp.gmail.com';
                                     $mail->SMTPAuth = true;
                                     $mail->Username = 'karanprabha22668@gmail.com';
-                                    $mail->Password = 'hrmq uoyw zory obcg';
+                                    $mail->Password = 'wyug jamk kuco mwin'; 
                                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                                     $mail->Port = 587;
 
