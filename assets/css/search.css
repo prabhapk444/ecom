@@ -23,6 +23,22 @@ body {
     margin-bottom: 20px;
 }
 
+#voiceSearchBtn {
+    background-color: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin-left: 10px;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+#voiceSearchBtn:hover {
+    background-color: #ddd;
+}
+
+
 
 .search-container input[type="text"] {
     padding: 12px;

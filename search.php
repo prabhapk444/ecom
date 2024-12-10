@@ -26,9 +26,13 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
     </div>
 
 <div class="content">
-    <div class="search-container">
-        <input type="text" id="searchBar" onkeyup="searchSongs()" placeholder="Search for songs...">
-    </div>
+<div class="search-container">
+    <input type="text" id="searchBar" onkeyup="searchSongs()" placeholder="Search for songs...">
+    <button id="voiceSearchBtn" onclick="startVoiceSearch()" title="Search by voice">
+        <i class="fas fa-microphone"></i>
+    </button>
+</div>
+
 
     <div class="sort-container">
         <button class="sort-btn" onclick="sortSongs('author', 'asc')">Sort by Author (A-Z)</button>
@@ -89,7 +93,7 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
     ?>
 
 </div>
-    
+    <script src="assets/js/search.js"></script>
     <script>
 
         
