@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 28, 2024 at 01:58 PM
+-- Generation Time: Dec 10, 2024 at 03:31 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.27
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `melody hub`
+-- Database: `music`
 --
 
 -- --------------------------------------------------------
@@ -51,6 +51,14 @@ CREATE TABLE `liked_songs` (
   `user_id` int(11) NOT NULL,
   `song_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `liked_songs`
+--
+
+INSERT INTO `liked_songs` (`id`, `user_id`, `song_id`) VALUES
+(23, 13, 9),
+(24, 14, 9);
 
 -- --------------------------------------------------------
 
@@ -104,7 +112,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `password`, `created_at`, `updated_at`, `profile_image`) VALUES
-(11, 'pk', 'viperprabhakaran@gmail.com', '$2y$10$XYbGgC2Mq8LguGIxl8ESZ.PRV/hGs4iteiQaUGFHotoH.mXk8Q1xG', '2024-10-28 07:59:26', '2024-10-28 12:08:44', 'uploads/671f7ecc0a4e0.jpg');
+(13, 'thrive', 'thriveboosttech@gmail.com', '$2y$10$qRRwQe/.XcePJMmu6YfZGO8oxn6QUYVmZnBQ19mUjndiWpQG45Vtq', '2024-11-20 04:03:57', '2024-11-20 04:03:57', 'uploads/673d5fad3e4d1.jpeg'),
+(14, 'prabha', 'viperprabhakaran@gmail.com', '$2y$10$MCj.WbyErQQiXI4.JRtpzOvCrt0eiUQJVl//Kicdra0s2A.0sgRyS', '2024-12-10 14:28:21', '2024-12-10 14:28:21', 'uploads/67585004dacfa.jpeg');
 
 --
 -- Indexes for dumped tables
@@ -152,7 +161,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `liked_songs`
 --
 ALTER TABLE `liked_songs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `songs`
@@ -164,7 +173,7 @@ ALTER TABLE `songs`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
