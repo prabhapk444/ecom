@@ -39,8 +39,6 @@ if (!isset($_SESSION['email']) || !isset($_SESSION['loggedin']))  {
         <button class="sort-btn" onclick="sortSongs('author', 'desc')">Sort by Author (Z-A)</button>
         <button class="sort-btn" onclick="sortSongs('title', 'asc')">Sort by Song Name (A-Z)</button>
         <button class="sort-btn" onclick="sortSongs('title', 'desc')">Sort by Song Name (Z-A)</button>
-        <button class="sort-btn" onclick="sortSongs('created_at', 'asc')">Sort by Date (Oldest First)</button>
-        <button class="sort-btn" onclick="sortSongs('created_at', 'desc')">Sort by Date (Newest First)</button>
     </div>
 
     <?php
