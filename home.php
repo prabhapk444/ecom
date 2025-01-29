@@ -28,7 +28,8 @@ if ($result->num_rows > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Melody Hub</title>
-    <link rel="stylesheet" href="./assets/css/home.css">
+    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="assets/css/chat.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
@@ -82,6 +83,28 @@ if ($result->num_rows > 0) {
 
     <h1>Welcome to Melody Hub!</h1>
     <p>Enjoy your music experience.</p>
+
+
+    <div id="chatbot-box" class="chat-container">
+    <div id="chatbot-header">
+        <h3>Melody Hub 🎵</h3>
+        <span id="close-btn" onclick="closeChat()">×</span>
+    </div>
+    <div id="chatbot-body" class="chat-box">
+        <div id="chat-history"></div> 
+    </div>
+    <div id="chatbot-footer">
+        <input type="text" id="user-message" placeholder="Type your message..." onkeypress="handleEnter(event)" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<button id="open-chat" onclick="openChat()">🎤 Chat with Us</button>
+
+
+
+
+
 
     <?php
     $sql = "SELECT * FROM songs";
@@ -188,7 +211,9 @@ if ($result->num_rows > 0) {
     ?>
 </div>
 
+
     <script src="./assets/js/player.js"></script>
+    <script src="./assets/js/chat.js"></script>
 
     <script>
 
